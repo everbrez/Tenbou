@@ -14,7 +14,7 @@ class Game {
             pattern: 3, list: ['四人东', '四人南'], default: 0, select: 0
         },
         '起始点数': {
-            pattern: 1, default: 25000, select: 25000, checker: (x) => {
+            pattern: 2, default: [25000, 25000, 25000, 25000], select: [25000, 25000, 25000, 25000], checker: (xs) => {
 
             }
         },
