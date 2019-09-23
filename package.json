@@ -1,0 +1,22 @@
+{
+  "name": "tenbou",
+  "version": "1.0.0",
+  "description": "点棒ですよ～",
+  "main": "index.js",
+  "scripts": {
+    "start": "browser-sync start --server --files \"./**/*.css,./**/*.html,./**/*.js\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/everbrez/Tenbou.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/everbrez/Tenbou/issues"
+  },
+  "homepage": "https://github.com/everbrez/Tenbou#readme",
+  "dependencies": {
+    "browser-sync": "^2.26.7"
+  }
+}
