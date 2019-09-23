@@ -18,12 +18,12 @@ body,
 }
 
 body {
-    background-color: #000;
+    background-color: lightgreen;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
 .container {
-    background-color: lightgreen;
+
 }
