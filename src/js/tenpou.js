@@ -29,6 +29,7 @@ window.addEventListener('load', () => {
         'beforeroundend': [],
         'ron': [],
         'richi': [],
+        'beforerichi': [],
         'tsuma': []
       }
 

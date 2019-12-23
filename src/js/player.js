@@ -18,9 +18,52 @@ const characterList = {
 }
 
 class Player {
-  constructor(position, beginPoints, character) {
+  constructor(position, beginPoints, character, id, score) {
     this.position = position;
     this.points = beginPoints;
-    this.character = character /* {name, avatar} */;
+    this.character = character /* {name, avatar} */ ;
+    this.id = id; // id: number
+    this.identity = 'player' + id;
+    this.score = score;
+    this.richi = false;
+    this.container = null
   }
+
+  render() {
+    const htmlTemplate = `
+    <div class="position">
+      ${this.position}
+    </div>
+    <div class="avatar">
+      <span class="player-score">${this.score}</span>
+      <img src="./img/player/64978502_p${this.avatar || 1}.png" alt="${this.identity}">
+      <span class="player-name">${this.identity}</span>
+    </div>
+    <div class="actions">
+      <button class="ron">胡</button>
+      <button class="tsumo">自摸</button>
+      <button class="richi">立直</button>
+    </div>
+    `;
+    const container = document.createElement('div');
+    container.innerHTML = htmlTemplate;
+    container.className = `player ${this.identity}`;
+    container.id = this.identity;
+
+    this.container = container;
+    return container
+  }
+
+  update() {
+    if (!this.container) {
+      throw new Error('you should call player render() before update...')
+    }
+
+  }
+}
+
+{
+  /* <div class="player player1" id="player1">
+
+  </div> */
 }
