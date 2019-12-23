@@ -21,6 +21,6 @@ class Player {
   constructor(position, beginPoints, character) {
     this.position = position;
     this.points = beginPoints;
-    this.character = character /* {name, avatar} */ ;
+    this.character = character /* {name, avatar} */;
   }
 }

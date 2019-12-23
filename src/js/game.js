@@ -61,6 +61,11 @@ class Game {
       default: [0, 1, 2, 3, 4],
       select: [0, 1, 2, 3, 4]
     },
+    '流局满贯': {
+      pattern: 0,
+      default: true,
+      select: true
+    },
     '不听罚符': {
       pattern: 2,
       default: [1000, 1500, 3000],
@@ -85,7 +90,7 @@ class Game {
 
       }
     },
-    '精算原点': {
+    '返点': {
       pattern: 1,
       default: 25000,
       select: 25000,
@@ -98,14 +103,6 @@ class Game {
       default: [+15, +5, -5, -15],
       select: [+15, +5, -5, -15],
       checker: (xs) => {
-
-      }
-    },
-    '头名赏': {
-      pattern: 1,
-      default: 0,
-      select: 0,
-      checker: (x) => {
 
       }
     },
@@ -139,7 +136,12 @@ class Game {
       default: true,
       select: true
     },
-    '多倍役满': {
+    '累计役满': {
+      pattern: 0,
+      default: true,
+      select: true
+    },
+    '多倍役满/役满复合': {
       pattern: 0,
       default: true,
       select: true
