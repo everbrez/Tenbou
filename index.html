@@ -10,13 +10,16 @@
   <script src="src/js/game.js"></script>
   <script src="src/js/player.js"></script>
   <script src="src/js/main.js"></script>
+  <script src="src/js/tenpou.js"></script>
+
 
   <title>点棒</title>
 </head>
 
 <body>
   <div class="container">
-    <div class="player player1">
+
+    <div class="player player1" id="player1">
       <div class="position">
         东
       </div>
@@ -26,14 +29,13 @@
         <span class="player-name">Player1</span>
       </div>
       <div class="actions">
-        <button>胡</button>
-        <button>自摸</button>
-        <button>立直</button>
+        <button class="ron">胡</button>
+        <button class="tsumo">自摸</button>
+        <button class="richi">立直</button>
       </div>
     </div>
 
-
-    <div class="player player2">
+    <div class="player player2" id="player2">
       <div class="position">
         东
       </div>
@@ -43,13 +45,12 @@
         <span class="player-name">Player1</span>
       </div>
       <div class="actions">
-        <button>胡</button>
-        <button>自摸</button>
-        <button>立直</button>
+        <button class="ron">胡</button>
+        <button class="tsumo">自摸</button>
+        <button class="richi">立直</button>
       </div>
     </div>
-
-    <div class="player player3">
+    <div class="player player3" id="player3">
       <div class="position">
         东
       </div>
@@ -59,13 +60,12 @@
         <span class="player-name">Player1</span>
       </div>
       <div class="actions">
-        <button>胡</button>
-        <button>自摸</button>
-        <button>立直</button>
+        <button class="ron">胡</button>
+        <button class="tsumo">自摸</button>
+        <button class="richi">立直</button>
       </div>
     </div>
-
-    <div class="player player4">
+    <div class="player player4" id="player4">
       <div class="position">
         东
       </div>
@@ -75,16 +75,17 @@
         <span class="player-name">Player1</span>
       </div>
       <div class="actions">
-        <button>胡</button>
-        <button>自摸</button>
-        <button>立直</button>
+        <button class="ron">胡</button>
+        <button class="tsumo">自摸</button>
+        <button class="richi">立直</button>
       </div>
     </div>
 
-    <div class="main">
+    <div class="main" id="dashboard">
       <div class="status">
-        <h2>东二局</h2>
-        <h2>一本场</h2>
+        <h2 class="round">东二局</h2>
+        <h2 class="honba">一本场</h2>
+        <h2 class="richi">立直</h2>
       </div>
     </div>
   </div>
