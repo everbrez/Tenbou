@@ -85,6 +85,7 @@ class Tenpou {
     });
     // bind next round button
     this.state.dashboard.onNextRound(this.nextRound.bind(this));
+    this.state.dashboard.onDraw(this.handleDraw.bind(this));
   }
 
   setState(cb = state => state) {
@@ -102,13 +103,30 @@ class Tenpou {
     this.state.dashboard.update();
   }
 
+  async handleDraw() {
+    const dialog = new Dialog();
+    const drawData = await dialog.showDrawDialog();
+    if (!drawData) {
+      return
+    }
+
+    this.handleRoundEnd('draw', this.state.players[0], drawData);
+  }
+
   async roundEnd(type, player) {
     const dialog = new Dialog();
-    const data = await dialog.showRoundEndDialog();
+    const data = await dialog.showRoundEndDialog(type === 'tsumo');
+    if (!data) {
+      return
+    }
+    this.handleRoundEnd(type, player, data);
+  }
+
+  handleRoundEnd(type, player, ...args) {
     this.recordResult();
     try {
-      this.emitEvent('beforeroundend', player, type, data);
-      this.emitEvent('roundend', player, type, data);
+      this.emitEvent('beforeroundend', player, type, ...args);
+      this.emitEvent('roundend', player, type, ...args);
       this.showResult();
       this.showNextRoundButton();
     } catch (error) {
@@ -136,12 +154,14 @@ class Tenpou {
     this.state.players.forEach(player => {
       player.showResult();
     })
+    this.state.dashboard.showResult();
   }
 
   hideResult() {
     this.state.players.forEach(player => {
       player.hideResult();
     })
+    this.state.dashboard.hideResult();
   }
 
   recordResult() {

@@ -315,7 +315,8 @@ body {
   display: none;
 }
 
-.next-round {
+.next-round,
+.draw-button {
   width: 100%;
   line-height: 2;
   background-color: white;

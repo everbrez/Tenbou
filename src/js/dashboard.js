@@ -12,12 +12,12 @@ class DashBoard {
     this.honba = honba;
     this.round = round;
     this.roundNames = roundNames
+    this.isShowResult = false;
 
     this.roundName = this.roundNames[round - 1];
 
     this.container = null;
     this.isShowNextRoundButton = false;
-
   }
 
   render() {
@@ -55,6 +55,7 @@ class DashBoard {
           <span class="richi-number">${richi}</span>
         </span>
       </h2>
+      <button class="draw-button">流局</button>
       <button class="next-round hidden">Next Round</button>
     </div>`
 
@@ -81,6 +82,7 @@ class DashBoard {
     const honbaContainer = this.container.querySelector('.honba-number');
     const roundContainer = this.container.querySelector('.round');
     const nextRoundButton = this.container.querySelector('.next-round');
+    const drawButton = this.container.querySelector('.draw-button');
 
     richiContainer.innerHTML = richi;
     honbaContainer.innerHTML = honba;
@@ -90,6 +92,12 @@ class DashBoard {
       nextRoundButton.classList.remove('hidden')
     } else {
       nextRoundButton.classList.add('hidden');
+    }
+
+    if (this.isShowResult) {
+      drawButton.disabled = true
+    } else {
+      drawButton.disabled = false
     }
   }
 
@@ -112,5 +120,22 @@ class DashBoard {
   nextRound() {
     this.round += 1;
     this.roundName = this.roundNames[this.round - 1];
+  }
+
+  onDraw(cb) {
+    if (!cb) {
+      throw new Error('you should provide an callback');
+    }
+
+    const drawButton = this.container.querySelector('.draw-button')
+    drawButton.addEventListener('click', cb, false)
+  }
+
+  showResult() {
+    this.isShowResult = true
+  }
+
+  hideResult() {
+    this.isShowResult = false;
   }
 }

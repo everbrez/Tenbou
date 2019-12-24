@@ -1,4 +1,10 @@
 class Dialog {
+  constructor() {
+    const instance = document.querySelector('.dialog');
+    if (instance) {
+      // instance.remove();
+    }
+  }
   async showUserConfigDialog() {
     return new Promise((resolve, reject) => {
       const htmlTemplate = `
@@ -90,17 +96,21 @@ class Dialog {
     })
   }
 
-  async showRoundEndDialog() {
+  async showRoundEndDialog(isTsumo = false) {
     return new Promise(resolve => {
       const loser = ['上家', '对家', '下家'];
-      const fans = ['1翻', '2翻', '3翻', '4翻', '5翻', '6-7翻', '8-10翻', '11-12翻', '役满', '2倍役满', '3倍役满', '4倍役满', '5倍役满', '6倍役满'];
-      const fus = ['20符', '25符', '30符', '40符', '50符', '60符', '70符', '80符', '90符', '100符', '110符'];
+      const fans = ['1翻', '2翻', '3翻', '4翻', '5翻', '6-7翻', '8-10翻',
+        '11-12翻', '役满', '2倍役满', '3倍役满', '4倍役满', '5倍役满', '6倍役满'
+      ];
+      const fus = ['20符', '25符', '30符', '40符', '50符', '60符', '70符', '80符',
+        '90符', '100符', '110符'
+      ];
 
       const htmlTemplate = `
       <div class="dialog-container">
       <form id="round-end-form">
         <div>
-          ${loser.map((loser, index) => `
+          ${isTsumo ? '' : loser.map((loser, index) => `
           <input type="radio" id="loser-${index}" name="loser" value="${loser}">
           <label for="loser-${index}">${loser}</label>
           `).join('')}
@@ -120,34 +130,83 @@ class Dialog {
         `).join('')}
         </div>
         <button type="submit">确定</button>
+        <button type="button" id="cancel-button">cancel</button>
+      </form>
+    </div>`
+
+      const container = document.createElement('div');
+      container.className = 'dialog';
+      container.innerHTML = htmlTemplate;
+
+      document.body.append(container);
+
+      const cancelButton = container.querySelector('#cancel-button');
+      const roundEndForm = container.querySelector('#round-end-form');
+
+      cancelButton.addEventListener('click', () => {
+        container.remove();
+        resolve(false);
+      })
+      roundEndForm.addEventListener('submit', event => {
+        event.preventDefault();
+        event.stopPropagation();
+        const formData = new FormData(roundEndForm);
+        const result = {}
+        let count = 0;
+        for (const entry of formData) {
+          const [field, value] = entry;
+          result[field] = value
+          count += 1;
+        }
+        if (count < 3 && !isTsumo) {
+          alert('请填写放铳玩家')
+          return;
+        }
+        container.remove();
+        resolve(result);
+      }, false)
+    })
+  }
+
+  async showDrawDialog() {
+    return new Promise(resolve => {
+      const options = ['普通流局', '途中流局（连庄）', '途中流局（轮庄）', '特殊流局'];
+      const htmlTemplate = `
+      <div class="dialog-container">
+      <form id="draw-form">
+        <select name="draw" id="draw">
+          ${options.map(option => `
+            <option value="${option}">${option}</option>
+          `).join('')}
+        </select>
+        <button type="submit">submit</button>
+        <button type="button" id="cancel-button">cancel</button>
       </form>
     </div>`
 
     const container = document.createElement('div');
     container.className = 'dialog';
     container.innerHTML = htmlTemplate;
-
     document.body.append(container);
 
-    const roundEndForm = container.querySelector('#round-end-form');
-    roundEndForm.addEventListener('submit', event => {
+
+    const form = container.querySelector('#draw-form');
+    const cancelButton = container.querySelector('#cancel-button');
+    form.addEventListener('submit', event => {
       event.preventDefault();
       event.stopPropagation();
-      const formData = new FormData(roundEndForm);
-      const result = {}
-      let count = 0;
-      for(const entry of formData) {
-        const [field, value] = entry;
-        result[field] = value
-        count += 1;
-      }
-      if (count < 3) {
-        alert('请填写放铳玩家')
-        return;
-      }
+
+      const formData = new FormData(form);
+
+      const data = formData.get('draw');
       container.remove();
-      resolve(result);
+      resolve(data);
+    }, false);
+
+    cancelButton.addEventListener('click', () => {
+      container.remove();
     }, false)
+
     })
   }
 }
