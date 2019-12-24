@@ -56,6 +56,7 @@ class DashBoard {
         </span>
       </h2>
       <button class="draw-button">流局</button>
+      <button class="multi-ron-button">多家和</button>
       <button class="next-round hidden">Next Round</button>
     </div>`
 
@@ -83,6 +84,7 @@ class DashBoard {
     const roundContainer = this.container.querySelector('.round');
     const nextRoundButton = this.container.querySelector('.next-round');
     const drawButton = this.container.querySelector('.draw-button');
+    const multiRonButton = this.container.querySelector('.multi-ron-button');
 
     richiContainer.innerHTML = richi;
     honbaContainer.innerHTML = honba;
@@ -96,8 +98,10 @@ class DashBoard {
 
     if (this.isShowResult) {
       drawButton.disabled = true
+      multiRonButton.disabled = true
     } else {
       drawButton.disabled = false
+      multiRonButton.disabled = false
     }
   }
 
@@ -129,6 +133,14 @@ class DashBoard {
 
     const drawButton = this.container.querySelector('.draw-button')
     drawButton.addEventListener('click', cb, false)
+  }
+
+  onMultiRon(cb) {
+    if (!cb) {
+      throw new Error('you should provide an callback');
+    }
+    const multiRonButton = this.container.querySelector('.multi-ron-button')
+    multiRonButton.addEventListener('click', cb, false)
   }
 
   showResult() {

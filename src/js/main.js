@@ -24,6 +24,7 @@ function main() {
   })
 
   a.on('afterroundend', (state, _config, _player, tenpou) => {
+    state.dashboard.honba += 1;
     if (state.dashboard.roundName === '南四局') {
       tenpou.gameover('正常流局');
     }

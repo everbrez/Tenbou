@@ -5,7 +5,7 @@ class Dialog {
       // instance.remove();
     }
   }
-  async showUserConfigDialog() {
+  showUserConfigDialog() {
     return new Promise((resolve, reject) => {
       const htmlTemplate = `
     <div class="dialog-container">
@@ -90,13 +90,13 @@ class Dialog {
     })
   }
 
-  async showDiceDialog() {
+  showDiceDialog() {
     return new Promise(resolve => {
 
     })
   }
 
-  async showRoundEndDialog(isTsumo = false) {
+  showRoundEndDialog(isTsumo = false) {
     return new Promise(resolve => {
       const loser = ['上家', '对家', '下家'];
       const fans = ['1翻', '2翻', '3翻', '4翻', '5翻', '6-7翻', '8-10翻',
@@ -111,22 +111,25 @@ class Dialog {
       <form id="round-end-form">
         <div>
           ${isTsumo ? '' : loser.map((loser, index) => `
-          <input type="radio" id="loser-${index}" name="loser" value="${loser}">
-          <label for="loser-${index}">${loser}</label>
+          <label for="loser-${index}">
+            <input type="radio" id="loser-${index}" name="loser" value="${loser}">
+          ${loser}</label>
           `).join('')}
         </div>
 
         <div>
         ${fans.map((fan, index) => `
-          <input type="radio" id="fan-${index}" name="fan" value="${fan}" ${index ? '' : 'checked'}>
-          <label for="fan-${index}">${fan}</label>
+          <label for="fan-${index}">
+            <input type="radio" id="fan-${index}" name="fan" value="${fan}" ${index ? '' : 'checked'}>
+          ${fan}</label>
         `).join('')}
         </div>
 
         <div>
         ${fus.map((fu, index) => `
-          <input type="radio" id="fu-${index}" name="fu" value="${fu}" ${index ? '' : 'checked'}>
-          <label for="fu-${index}">${fu}</label>
+          <label for="fu-${index}">
+            <input type="radio" id="fu-${index}" name="fu" value="${fu}" ${index ? '' : 'checked'}>
+          ${fu}</label>
         `).join('')}
         </div>
         <button type="submit">确定</button>
@@ -168,7 +171,7 @@ class Dialog {
     })
   }
 
-  async showDrawDialog() {
+  showDrawDialog() {
     return new Promise(resolve => {
       const options = ['普通流局', '途中流局（连庄）', '途中流局（轮庄）', '特殊流局'];
       const htmlTemplate = `
@@ -205,8 +208,69 @@ class Dialog {
 
     cancelButton.addEventListener('click', () => {
       container.remove();
+      resolve(false)
     }, false)
 
+    })
+  }
+
+  showMultiRonDialog(players) {
+    return new Promise(resolve => {
+      const htmlTemplate = `
+      <div class="dialog-container">
+      <form id="multiRon-form">
+        <div>
+          放铳玩家:
+          ${players.map((player, index) => `
+          <label for="loser-${index}">
+            <input type="radio" name="loser" id="loser-${index}" value="${player.id}">
+          </label>
+          `).join('')}
+        </div>
+  
+        <div>
+          和牌玩家:
+          ${players.map((player, index)=> `
+          <label for="ron-${index}">
+            <input type="checkbox" name="ron" id="ron-${index}" value="${player.id}">
+          </label>
+          `).join('')}
+        </div>
+
+        <button type="submit">submit</button>
+        <button type="button" id="cancel-button">cancel</button>
+      </form>
+    </div>
+      `
+      const container = document.createElement('div');
+      container.className = 'dialog';
+      container.innerHTML = htmlTemplate;
+
+      document.body.appendChild(container)
+
+      const form = container.querySelector('#multiRon-form');
+      const cancelButton = container.querySelector('#cancel-button');
+
+      form.addEventListener('submit', event => {
+        event.preventDefault();
+        event.stopPropagation();
+
+        const formData = new FormData(form);
+
+        const result = {
+          loser: formData.get('loser'),
+          ron: formData.getAll('ron')
+        }
+
+        console.log(result);
+        container.remove();
+        resolve(result);
+      }, false);
+
+      cancelButton.addEventListener('click', () => {
+        container.remove();
+        resolve(false)
+      }, false)
     })
   }
 }

@@ -7,6 +7,11 @@ class Tenpou {
       master: {}
     }
 
+    // afterroundend事件不会立即更新界面，会在下一轮开始才进行更新。
+    // 该事件是用来做下一轮的准备工作
+
+    // roundend事件发生在beforerounded事件之后，一般要结束游戏的检查放在roundend事件，计算分数的操作放在beforeroundend事件。
+    // 尽量不要在roundend里进行数值操作，即改变state的一些内容，防止其他检查操作发生错误。
     this.eventHandler = {
       'gamestart': [],
       'roundend': [],
@@ -59,7 +64,7 @@ class Tenpou {
       return handler(state, this.config, identify, this, ...args)
     }, this.state)
 
-    this.state = Object.assign({}, oldState, newState);
+    this.state = Object.assign({}, oldState, newState || {});
   }
 
   on(eventName, eventHandler) {
@@ -86,6 +91,7 @@ class Tenpou {
     // bind next round button
     this.state.dashboard.onNextRound(this.nextRound.bind(this));
     this.state.dashboard.onDraw(this.handleDraw.bind(this));
+    this.state.dashboard.onMultiRon(this.handleMultiRon.bind(this));
   }
 
   setState(cb = state => state) {
@@ -113,6 +119,16 @@ class Tenpou {
     this.handleRoundEnd('draw', this.state.players[0], drawData);
   }
 
+  async handleMultiRon() {
+    const dialog = new Dialog();
+    const data = await dialog.showMultiRonDialog(this.state.players);
+    if (!data) {
+      return
+    }
+
+    this.handleRoundEnd('multiRon', this.state.players[0], data);
+  }
+
   async roundEnd(type, player) {
     const dialog = new Dialog();
     const data = await dialog.showRoundEndDialog(type === 'tsumo');
@@ -132,14 +148,13 @@ class Tenpou {
     } catch (error) {
       this.handleGameOver('主动结束游戏: ' + error.message)
     }
+    this.setState();
 
     try {
       this.emitEvent('afterroundend');
     } catch (error) {
       this.handleGameOver('被动结束游戏: ' + error.message)
     }
-
-    this.setState();
   }
 
   showNextRoundButton() {
