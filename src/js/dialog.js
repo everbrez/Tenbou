@@ -449,4 +449,51 @@ class Dialog {
 
     })
   }
+
+  showResultDialog(playersSource = []) {
+    const players = [...playersSource]
+    players.sort((player1, player2) => player2.score - player1.score);
+
+    return new Promise(resolve => {
+      const htmlTemplate = `
+      <div class="dialog-container">
+        <h1>Result</h1>
+        ${players.map((player, index) => `
+        <div class="result-player ${index ? '' : 'winner'}">
+          <span class="player-name">
+            ${player.name}
+          </span>
+          <span class="player-score">
+            ${player.score}
+          </span>
+        </div>
+        `).join('')}
+
+        <div class="result-buttons-container">
+          <button id="continue-button">继续</button>
+          <button id="end-button">结束</button>
+        </div>
+      </div>
+      `;
+
+      const container = document.createElement('div');
+      container.className = 'dialog';
+      container.innerHTML = htmlTemplate;
+      document.body.append(container);
+
+      const continueButton = container.querySelector('#continue-button');
+      const endButton = container.querySelector('#end-button');
+
+      continueButton.addEventListener('click', () => {
+        container.remove();
+        resolve(true);
+      }, false)
+
+      endButton.addEventListener('click', () => {
+        container.remove();
+        resolve(false);
+      }, false);
+
+    })
+  }
 }

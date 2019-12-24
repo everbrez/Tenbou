@@ -372,8 +372,9 @@ body {
   margin-top: .3rem;
 }
 
-.dialog button + button {
+.dialog button{
   margin-left: .5rem;
+  margin-right: .5rem;
 }
 
 .dialog button:hover {
@@ -433,4 +434,31 @@ body {
 
 .draw-button-containers, .multi-buttons-container {
   justify-content: center;
+}
+
+.result-player .player-name {
+  font-size: 4rem;
+}
+
+.winner {
+  color: red;
+}
+
+.winner .player-name {
+  font-size: 5rem;
+}
+
+.result-player {
+  margin: 1rem 0;
+}
+
+.result-player .player-score {
+  display: inline-block;
+  font-size: 3rem;
+  transform: translateY(30%);
+}
+
+.result-player .result-buttons-container {
+  display: flex;
+  justify-content: flex-end;
 }

@@ -23,6 +23,19 @@ class DashBoard {
     this.isShowNextRoundButton = false;
   }
 
+  reset() {
+    this.richi = 0;
+    this.honba = 0;
+    this.round = 1;
+    this.roundName = this.roundNames[this.round - 1]
+    this.isShowNextRoundButton = false;
+    this.isShowResult = false;
+  }
+
+  unmout() {
+    this.container.remove();
+  }
+
   render() {
     const {
       richi,

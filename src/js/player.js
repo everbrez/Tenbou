@@ -72,6 +72,18 @@ class Player {
     this.identity = 'player' + id;
   }
 
+  reset() {
+    this.score = 12000;
+    this.result = '+ 0';
+    this.isShowResult = false;
+    this.richi = false;
+    this.record = undefined;
+  }
+
+  unmout() {
+    this.container.remove();
+  }
+
   // 在进入beforeroundend事件之前，会对player的分数进行存储，用于后面计算差值。
   recordScore() {
     this.record = this.score;

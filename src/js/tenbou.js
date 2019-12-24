@@ -29,6 +29,8 @@ class Tenbou {
     };
 
     this.config = {};
+
+    this.onEndHandler = []
   }
 
   async init() {
@@ -51,6 +53,10 @@ class Tenbou {
     });
 
     this.emitEvent('init');
+  }
+
+  onEnd(cb) {
+    this.onEndHandler.push(cb);
   }
 
   // mount 是将player和dashboard插入页面的函数，生成dom并插入的过程
@@ -217,8 +223,29 @@ class Tenbou {
   }
 
   // 用来显示结算界面用
-  handleGameOver(message) {
-    alert(message);
+  async handleGameOver(message) {
+    const dialog = new Dialog();
+    const isContinue = await dialog.showResultDialog(this.state.players)
+    if (isContinue) {
+      this.continue();
+      return
+    }
+
+    this.handleEnd();
+  }
+
+  continue() {
+    // 重置
+    this.state.players.forEach(player => player.reset())
+    this.state.dashboard.reset();
+    this.emitEvent('init');
+    this.setState();
+  }
+
+  handleEnd() {
+    this.state.players.forEach(player => player.unmout())
+    this.state.dashboard.unmout();
+    this.onEndHandler.forEach(cb => cb());
   }
 
   // 对外接口，一场游戏的开始

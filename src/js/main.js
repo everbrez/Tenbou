@@ -12,8 +12,8 @@ function main() {
   a.on('beforeroundend', (state, config, player, Tenbou, type) => {
     const id = player.id
     lastPlayer = state.players[(id - 1 - 1 + 4) % 4];
-    player.score += 500;
-    lastPlayer.score -= 500;
+    player.score += 10000;
+    lastPlayer.score -= 5000;
     return state;
   });
 
