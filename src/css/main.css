@@ -103,16 +103,17 @@ body {
   user-select: none;
 }
 
-.player .richi.active::after {
+.player .richi.active::after,
+.main .status .richi::after {
   content: '';
   position: absolute;
   width: 1em;
   height: 1em;
   border-radius: 1em;
-  top: 0;
+  top: 50%;
   left: 50%;
   margin-left: -.5em;
-  margin-top: 0.125em;
+  margin-top: -.5em;
   background-color: red;
 }
 
@@ -239,8 +240,53 @@ body {
 .main {
   max-width: 50%;
   max-height: 33.333%;
-  background-color: white;
   border-radius: 4px;
   padding: 1rem 10%;
   overflow: auto;
+}
+
+.main .status .richi {
+  position: relative;
+  font-size: 1rem;
+  color: white;
+  line-height: 1.5;
+  background-color: white;
+  border-radius: 4px;
+  width: 9rem;
+}
+
+.status .richi .richi-info,
+.honba-info {
+  position: absolute;
+  font-size: 1rem;
+  right: .5rem;
+  color: black;
+}
+
+.honba-info {
+  top: 50%;
+  margin-top: -.5rem;
+}
+
+.honba {
+  position: relative;
+  font-size: 0;
+  background-color: white;
+  border-radius: 4px;
+  margin: .3rem auto;
+  padding: .2rem 0;
+}
+
+.honba-dot {
+  display: inline-block;
+  width: .5rem;
+  height: .5rem;
+  background-color: black;
+  border-radius: .5rem;
+  margin: .1rem;
+}
+
+.honba li {
+  list-style: none;
+  line-height: 1;
 }
