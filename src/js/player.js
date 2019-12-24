@@ -47,10 +47,31 @@ class Player {
     this.avatar = avatar; // 64978502_p5
     this.id = id; // id: number
     this.score = score;
+    this.result = '+ 0';
+    this.isShowResult = false;
 
     this.richi = richi; // default false
     this.container = null
     this.identity = 'player' + id;
+  }
+
+  recordScore() {
+    this.record = this.score;
+  }
+
+  showResult() {
+    this.isShowResult = true
+    const result = this.score - this.record;
+    if (result >= 0) {
+      this.result = '+ ' + result;
+      return
+    }
+
+    this.result = '- ' + -result;
+  }
+
+  hideResult() {
+    this.isShowResult = false;
   }
 
   render() {
@@ -61,7 +82,9 @@ class Player {
 
       <div class="player-main">
         <button class="richi ${this.richi ? 'active' : ''}">立直</button>
-        <span class="player-score">${this.score}</span>
+        <span class="player-score">
+          ${this.score}
+        </span>
         <div class="player-info">
           <img src="./img/player/${this.avatar}.png" alt="${this.identity}">
           <span class="player-name">${this.name}<span>
@@ -90,12 +113,10 @@ class Player {
     if (!dom) {
       throw new Error('can\'t bind event: ', query);
     }
-    console.log('bind')
     dom.addEventListener('click', event => cb(this, event), false)
   }
 
   onRichi(cb) {
-    console.log('23333')
     this.bindEvent('.richi', cb)
   }
 
@@ -118,6 +139,8 @@ class Player {
     } = this;
     const richiButton = this.container.querySelector('.richi');
     const scoreContainer = this.container.querySelector('.player-score');
+    const ronButton = this.container.querySelector('.ron');
+    const tsumoButton = this.container.querySelector('.tsumo');
 
     richiButton.classList.remove('active');
 
@@ -125,6 +148,17 @@ class Player {
       richiButton.classList.add('active');
     }
 
-    scoreContainer.innerHTML = score;
+    if (this.isShowResult) {
+      scoreContainer.innerHTML =
+        `<span class="score-result-container">${score}<span class="score-result"><br/>${this.result}</span></span>`
+      richiButton.disabled = true;
+      ronButton.disabled = true;
+      tsumoButton.disabled = true;
+    } else {
+      scoreContainer.innerHTML = score;
+      richiButton.disabled = false;
+      ronButton.disabled = false;
+      tsumoButton.disabled = false;
+    }
   }
 }

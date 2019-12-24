@@ -12,6 +12,14 @@ h2 {
   padding: 0;
 }
 
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+
 html,
 body,
 .container {
@@ -127,6 +135,7 @@ body {
 }
 
 .player .player-score {
+  position: relative;
   flex: 0 1 5rem;
   display: flex;
   flex-flow: row nowrap;
@@ -182,7 +191,6 @@ body {
   line-height: 1.5;
   background: white;
   border: none;
-  cursor: pointer;
   border-radius: 4px;
 }
 
@@ -292,4 +300,26 @@ body {
 .honba li {
   list-style: none;
   line-height: 1;
+}
+
+.score-result-container,
+.score-result {
+  font-size: 2rem;
+}
+
+.score-result {
+  color: red;
+}
+
+.hidden {
+  display: none;
+}
+
+.next-round {
+  width: 100%;
+  line-height: 2;
+  background-color: white;
+  border: none;
+  border-radius: 4px;
+  margin-top: .3rem;
 }
