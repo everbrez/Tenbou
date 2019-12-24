@@ -25,21 +25,21 @@ function getRandomName() {
   const nameList = characterList[school];
   const name = nameList[Math.floor(Math.random() * nameList.length)];
 
-  return name
+  return name;
 }
 
-window.getRandomNames = function() {
+window.getRandomNames = function () {
   let set = new Set();
-  while(set.size < 4) {
+  while (set.size < 4) {
     const name = getRandomName();
-    set.add(name)
+    set.add(name);
   }
-  return [...set]
+  return [...set];
 }
 
 function getRandomAvatar() {
   const index = Math.floor(Math.random() * 35);
-  return '64978502_p' + index
+  return '64978502_p' + index;
 }
 
 class Player {
@@ -53,7 +53,7 @@ class Player {
       richi = false
     } = options;
 
-    this.position = position; // 东西南北
+    this.position = position; // 东南西北
     this.name = name;
     this.avatar = avatar; // 64978502_p5
     this.id = id; // id: number
@@ -62,7 +62,7 @@ class Player {
     this.isShowResult = false;
 
     this.richi = richi; // default false
-    this.container = null
+    this.container = null;
     this.identity = 'player' + id;
   }
 
@@ -71,11 +71,11 @@ class Player {
   }
 
   showResult() {
-    this.isShowResult = true
+    this.isShowResult = true;
     const result = this.score - this.record;
     if (result >= 0) {
       this.result = '+ ' + result;
-      return
+      return;
     }
 
     this.result = '- ' + -result;
@@ -105,15 +105,15 @@ class Player {
       <div class="actions">
         <button class="ron">ロン</button>
         <button class="tsumo">ツモ</button>
-      </div>
-    `;
+      </div>`;
+
     const container = document.createElement('div');
     container.innerHTML = htmlTemplate;
     container.className = `player ${this.identity}`;
     container.id = this.identity;
 
     this.container = container;
-    return container
+    return container;
   }
 
   bindEvent(query, cb) {
@@ -124,24 +124,24 @@ class Player {
     if (!dom) {
       throw new Error('can\'t bind event: ', query);
     }
-    dom.addEventListener('click', event => cb(this, event), false)
+    dom.addEventListener('click', event => cb(this, event), false);
   }
 
   onRichi(cb) {
-    this.bindEvent('.richi', cb)
+    this.bindEvent('.richi', cb);
   }
 
   onRon(cb) {
-    this.bindEvent('.ron', cb)
+    this.bindEvent('.ron', cb);
   }
 
   onTsumo(cb) {
-    this.bindEvent('.tsumo', cb)
+    this.bindEvent('.tsumo', cb);
   }
 
   update() {
     if (!this.container) {
-      throw new Error('you should call player render() before update...')
+      throw new Error('you should call player render() before update...');
     }
 
     const {
@@ -161,7 +161,7 @@ class Player {
 
     if (this.isShowResult) {
       scoreContainer.innerHTML =
-        `<span class="score-result-container">${this.record}<span class="score-result"><br/>${this.result}</span></span>`
+        `<span class="score-result-container">${this.record}<span class="score-result"><br/>${this.result}</span></span>`;
       richiButton.disabled = true;
       ronButton.disabled = true;
       tsumoButton.disabled = true;

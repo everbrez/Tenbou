@@ -1,4 +1,4 @@
-class Tenpou {
+class Tenbou {
   constructor() {
     this.state = {
       players: [],
@@ -21,9 +21,9 @@ class Tenpou {
       'richi': [],
       'beforerichi': [],
       'tsumo': []
-    }
+    };
 
-    this.config = {}
+    this.config = {};
   }
 
   async init() {
@@ -36,7 +36,8 @@ class Tenpou {
 
     const roundNames = [
       '東一局', '東二局', '東三局', '東四局',
-      '南一局', '南二局', '南三局', '南四局'
+      '南一局', '南二局', '南三局', '南四局',
+      '西一局', '西二局', '西三局', '西四局'
     ];
 
     this.state.dashboard = new DashBoard({
@@ -53,40 +54,40 @@ class Tenpou {
     const container = document.querySelector('.container');
     const playerInstance = this.state.players.map(player => player.render());
     const dashboardInstance = this.state.dashboard.render();
-    this.bindEvent()
+    this.bindEvent();
     container.append(...playerInstance, dashboardInstance);
   }
 
   emitEvent(eventName, identify, ...args) {
-    const oldState = this.state
+    const oldState = this.state;
     const newState = this.eventHandler[eventName].reduce((state,
       handler) => {
       return handler(state, this.config, identify, this, ...args)
-    }, this.state)
+    }, this.state);
 
     this.state = Object.assign({}, oldState, newState || {});
   }
 
   on(eventName, eventHandler) {
-    this.eventHandler[eventName].push(eventHandler)
+    this.eventHandler[eventName].push(eventHandler);
   }
 
   bindEvent() {
     this.state.players.forEach(el => {
       el.onRichi((player) => {
-        console.log('richi')
+        console.log('richi');
         this.emitEvent('beforerichi', player);
         this.emitEvent('richi', player);
         this.setState();
-      })
+      });
 
       el.onRon(player => {
-        this.roundEnd('ron', player)
-      })
+        this.roundEnd('ron', player);
+      });
 
       el.onTsumo(player => {
-        this.roundEnd('tsumo', player)
-      })
+        this.roundEnd('tsumo', player);
+      });
     });
     // bind next round button
     this.state.dashboard.onNextRound(this.nextRound.bind(this));
@@ -97,7 +98,7 @@ class Tenpou {
   setState(cb = state => state) {
     if (cb) {
       const oldState = this.state;
-      const newState = cb(this.state)
+      const newState = cb(this.state);
       this.state = Object.assign({}, oldState, newState);
     }
 
@@ -113,7 +114,7 @@ class Tenpou {
     const dialog = new Dialog();
     const drawData = await dialog.showDrawDialog();
     if (!drawData) {
-      return
+      return;
     }
 
     this.handleRoundEnd('draw', this.state.players[0], drawData);
@@ -123,7 +124,7 @@ class Tenpou {
     const dialog = new Dialog();
     const data = await dialog.showMultiRonDialog(this.state.players);
     if (!data) {
-      return
+      return;
     }
 
     this.handleRoundEnd('multiRon', this.state.players[0], data);
@@ -133,7 +134,7 @@ class Tenpou {
     const dialog = new Dialog();
     const data = await dialog.showRoundEndDialog(type === 'tsumo');
     if (!data) {
-      return
+      return;
     }
     this.handleRoundEnd(type, player, data);
   }
@@ -146,14 +147,14 @@ class Tenpou {
       this.showResult();
       this.showNextRoundButton();
     } catch (error) {
-      this.handleGameOver('主动结束游戏: ' + error.message)
+      this.handleGameOver('主动结束游戏: ' + error.message);
     }
     this.setState();
 
     try {
       this.emitEvent('afterroundend');
     } catch (error) {
-      this.handleGameOver('被动结束游戏: ' + error.message)
+      this.handleGameOver('被动结束游戏: ' + error.message);
     }
   }
 
@@ -168,21 +169,21 @@ class Tenpou {
   showResult() {
     this.state.players.forEach(player => {
       player.showResult();
-    })
+    });
     this.state.dashboard.showResult();
   }
 
   hideResult() {
     this.state.players.forEach(player => {
       player.hideResult();
-    })
+    });
     this.state.dashboard.hideResult();
   }
 
   recordResult() {
     this.state.players.forEach(player => {
       player.recordScore();
-    })
+    });
   }
 
   nextRound() {
@@ -196,11 +197,11 @@ class Tenpou {
   }
 
   gameover(message) {
-    throw new Error(message)
+    throw new Error(message);
   }
 
   handleGameOver(message) {
-    alert(message)
+    alert(message);
   }
 
   async start() {

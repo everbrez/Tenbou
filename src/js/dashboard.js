@@ -1,6 +1,7 @@
 const defaultRoundNames = [
   '東一局', '東二局', '東三局', '東四局',
-  '南一局', '南二局', '南三局', '南四局'
+  '南一局', '南二局', '南三局', '南四局',
+  '西一局', '西二局', '西三局', '西四局'
 ];
 
 class DashBoard {
@@ -11,7 +12,7 @@ class DashBoard {
     this.richi = richi;
     this.honba = honba;
     this.round = round;
-    this.roundNames = roundNames
+    this.roundNames = roundNames;
     this.isShowResult = false;
 
     this.roundName = this.roundNames[round - 1];
@@ -58,7 +59,7 @@ class DashBoard {
       <button class="draw-button">流局</button>
       <button class="multi-ron-button">多家和</button>
       <button class="next-round hidden">Next Round</button>
-    </div>`
+    </div>`;
 
     this.container = document.createElement('div');
     this.container.className = 'main';
@@ -91,17 +92,17 @@ class DashBoard {
     roundContainer.innerHTML = roundName;
 
     if (this.isShowNextRoundButton) {
-      nextRoundButton.classList.remove('hidden')
+      nextRoundButton.classList.remove('hidden');
     } else {
       nextRoundButton.classList.add('hidden');
     }
 
     if (this.isShowResult) {
-      drawButton.disabled = true
-      multiRonButton.disabled = true
+      drawButton.disabled = true;
+      multiRonButton.disabled = true;
     } else {
-      drawButton.disabled = false
-      multiRonButton.disabled = false
+      drawButton.disabled = false;
+      multiRonButton.disabled = false;
     }
   }
 
@@ -131,20 +132,20 @@ class DashBoard {
       throw new Error('you should provide an callback');
     }
 
-    const drawButton = this.container.querySelector('.draw-button')
-    drawButton.addEventListener('click', cb, false)
+    const drawButton = this.container.querySelector('.draw-button');
+    drawButton.addEventListener('click', cb, false);
   }
 
   onMultiRon(cb) {
     if (!cb) {
       throw new Error('you should provide an callback');
     }
-    const multiRonButton = this.container.querySelector('.multi-ron-button')
-    multiRonButton.addEventListener('click', cb, false)
+    const multiRonButton = this.container.querySelector('.multi-ron-button');
+    multiRonButton.addEventListener('click', cb, false);
   }
 
   showResult() {
-    this.isShowResult = true
+    this.isShowResult = true;
   }
 
   hideResult() {

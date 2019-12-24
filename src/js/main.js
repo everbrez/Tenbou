@@ -1,34 +1,34 @@
 window.addEventListener('load', main, false);
 
 function main() {
-  window.a = new Tenpou()
+  window.a = new Tenbou();
   a.on('richi', (state, config, player) => {
     state.dashboard.richi += 1;
     player.score -= 1000;
     player.richi = true;
-    return state
-  })
+    return state;
+  });
 
-  a.on('beforeroundend', (state, config, player, tenpou, type) => {
+  a.on('beforeroundend', (state, config, player, Tenbou, type) => {
     const id = player.id
     lastPlayer = state.players[(id - 1 - 1 + 4) % 4];
     player.score += 500;
     lastPlayer.score -= 500;
     return state;
-  })
+  });
 
-  a.on('roundend', (state, config, player, tenpou, type) => {
+  a.on('roundend', (state, config, player, Tenbou, type) => {
     if(player.score > 42000) {
-      tenpou.gameover('点数超过42000');
+      Tenbou.gameover('点数超过42000');
     }
-  })
+  });
 
-  a.on('afterroundend', (state, _config, _player, tenpou) => {
+  a.on('afterroundend', (state, _config, _player, Tenbou) => {
     state.dashboard.honba += 1;
     if (state.dashboard.roundName === '南四局') {
-      tenpou.gameover('正常流局');
+      Tenbou.gameover('正常流局');
     }
-  })
+  });
 
   a.start();
 }
