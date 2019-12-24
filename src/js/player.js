@@ -165,10 +165,13 @@ class Player {
     const ronButton = this.container.querySelector('.ron');
     const tsumoButton = this.container.querySelector('.tsumo');
 
-    richiButton.classList.remove('active');
 
     if (richi) {
       richiButton.classList.add('active');
+      richiButton.disabled = true;
+    } else {
+      richiButton.classList.remove('active');
+      richiButton.disabled = false;
     }
 
     if (this.isShowResult) {
