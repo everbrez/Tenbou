@@ -1,25 +1,34 @@
+const defaultRoundNames = [
+  '東一局', '東二局', '東三局', '東四局',
+  '南一局', '南二局', '南三局', '南四局'
+];
+
 class DashBoard {
   constructor(options = {}) {
     const {
-      richi = 0, honba = 0, round = '东二局'
+      richi = 0, honba = 0, round = 1, roundNames = defaultRoundNames
     } = options;
     this.richi = richi;
     this.honba = honba;
-    this.round = round
+    this.round = round;
+    this.roundNames = roundNames
+
+    this.roundName = this.roundNames[round - 1];
 
     this.container = null;
     this.isShowNextRoundButton = false;
+
   }
 
   render() {
     const {
       richi,
       honba,
-      round
+      roundName
     } = this;
     const htmlTemplate = `
     <div class="status">
-      <h2 class="round">${round}</h2>
+      <h2 class="round">${roundName}</h2>
       <h2 class="honba">
         <li>
           <span class="honba-dot"></span>
@@ -65,7 +74,7 @@ class DashBoard {
     const {
       richi,
       honba,
-      round
+      roundName
     } = this;
 
     const richiContainer = this.container.querySelector('.richi-number');
@@ -75,7 +84,7 @@ class DashBoard {
 
     richiContainer.innerHTML = richi;
     honbaContainer.innerHTML = honba;
-    roundContainer.innerHTML = round;
+    roundContainer.innerHTML = roundName;
 
     if (this.isShowNextRoundButton) {
       nextRoundButton.classList.remove('hidden')
@@ -98,5 +107,10 @@ class DashBoard {
     }
     const nextRoundButton = this.container.querySelector('.next-round');
     nextRoundButton.addEventListener('click', cb, false);
+  }
+
+  nextRound() {
+    this.round += 1;
+    this.roundName = this.roundNames[this.round - 1];
   }
 }

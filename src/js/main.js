@@ -2,8 +2,6 @@ window.addEventListener('load', main, false);
 
 function main() {
   window.a = new Tenpou()
-  a.init();
-  a.mount();
   a.on('richi', (state, config, player) => {
     state.dashboard.richi += 1;
     player.score -= 1000;
@@ -14,8 +12,8 @@ function main() {
   a.on('beforeroundend', (state, config, player, tenpou, type) => {
     const id = player.id
     lastPlayer = state.players[(id - 1 - 1 + 4) % 4];
-    player.score += 1000;
-    lastPlayer.score -= 1000;
+    player.score += 500;
+    lastPlayer.score -= 500;
     return state;
   })
 
@@ -24,4 +22,12 @@ function main() {
       tenpou.gameover('点数超过42000');
     }
   })
+
+  a.on('afterroundend', (state, _config, _player, tenpou) => {
+    if (state.dashboard.roundName === '南四局') {
+      tenpou.gameover('正常流局');
+    }
+  })
+
+  a.start();
 }

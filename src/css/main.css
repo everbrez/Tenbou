@@ -161,7 +161,7 @@ body {
 }
 
 .player .player-position,
-.actions{
+.actions {
   box-sizing: border-box;
   padding-bottom: 2.3rem;
 }
@@ -322,4 +322,50 @@ body {
   border: none;
   border-radius: 4px;
   margin-top: .3rem;
+}
+
+.dialog {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+
+  background-color: white;
+}
+
+.dialog-container {
+  width: 100%;
+  max-width: 500px;
+  margin: auto;
+  padding-top: 1rem;
+}
+
+.user-name-dialog label {
+  display: block;
+}
+
+.user-name-dialog label+label {
+  margin-top: 1rem;
+}
+
+.dialog .position {
+  display: inline-block;
+  font-size: 1rem;
+}
+
+.dialog button {
+  display: block;
+  line-height: 1.5;
+  width: 10rem;
+  max-width: 100%;
+  padding: .2rem .5rem;
+  background: none;
+  border: 1px solid lightslategray;
+  border-radius: 4px;
+  margin-top: .3rem;
+}
+
+.dialog .buttons-container {
+  margin: 1rem 0 0 2rem;
 }

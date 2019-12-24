@@ -2,17 +2,16 @@ class Tenpou {
   constructor() {
     this.state = {
       players: [],
-      dashboard: new DashBoard({
-        richi: 0,
-        honba: 0,
-        round: `东二局`,
-      }),
-      startPos: Math.floor(Math.random() * 4 + 1)
+      dashboard: {},
+      startPos: Math.floor(Math.random() * 4 + 1),
+      master: {}
     }
 
     this.eventHandler = {
+      'gamestart': [],
       'roundend': [],
       'beforeroundend': [],
+      'afterroundend': [],
       'ron': [],
       'richi': [],
       'beforerichi': [],
@@ -22,15 +21,27 @@ class Tenpou {
     this.config = {}
   }
 
-  init() {
+  async init() {
     // 此处get用户的设置，初始化player
-    this.state.players = new Array(4).fill(0).map((_val, index) => {
-      return new Player({
-        id: index + 1,
-        position: '东南西北' [(this.state.startPos - index - 1 + 4) % 4],
-        score: 12000 + index + 1,
-      })
-    })
+    let dialog = new Dialog();
+    const players = await dialog.showUserConfigDialog();
+
+    this.state.players = players;
+    this.state.master = players[0];
+
+    const roundNames = [
+      '東一局', '東二局', '東三局', '東四局',
+      '南一局', '南二局', '南三局', '南四局'
+    ];
+
+    this.state.dashboard = new DashBoard({
+      richi: 0,
+      honba: 0,
+      round: 1,
+      roundNames,
+    });
+
+    this.emitEvent('gamestart');
   }
 
   mount() {
@@ -41,7 +52,7 @@ class Tenpou {
     container.append(...playerInstance, dashboardInstance);
   }
 
-  omitEvent(eventName, identify, ...args) {
+  emitEvent(eventName, identify, ...args) {
     const oldState = this.state
     const newState = this.eventHandler[eventName].reduce((state,
       handler) => {
@@ -59,8 +70,8 @@ class Tenpou {
     this.state.players.forEach(el => {
       el.onRichi((player) => {
         console.log('richi')
-        this.omitEvent('beforerichi', player);
-        this.omitEvent('richi', player);
+        this.emitEvent('beforerichi', player);
+        this.emitEvent('richi', player);
         this.setState();
       })
 
@@ -91,17 +102,26 @@ class Tenpou {
     this.state.dashboard.update();
   }
 
-  roundEnd(type, player) {
+  async roundEnd(type, player) {
+    const dialog = new Dialog();
+    const data = await dialog.showRoundEndDialog();
     this.recordResult();
     try {
-      this.omitEvent('beforeroundend', player, type);
-      this.omitEvent('roundend', player, type);
+      this.emitEvent('beforeroundend', player, type, data);
+      this.emitEvent('roundend', player, type, data);
       this.showResult();
       this.showNextRoundButton();
-      this.setState();
     } catch (error) {
-      alert('主动结束游戏: ' + error.message)
+      this.handleGameOver('主动结束游戏: ' + error.message)
     }
+
+    try {
+      this.emitEvent('afterroundend');
+    } catch (error) {
+      this.handleGameOver('被动结束游戏: ' + error.message)
+    }
+
+    this.setState();
   }
 
   showNextRoundButton() {
@@ -134,10 +154,22 @@ class Tenpou {
     // 骰子
     this.hideResult();
     this.hideNextRoundButton();
+    // reset player richi status
+    this.state.players.forEach(player => player.richi = false)
+    this.state.dashboard.nextRound();
     this.setState();
   }
 
   gameover(message) {
     throw new Error(message)
+  }
+
+  handleGameOver(message) {
+    alert(message)
+  }
+
+  async start() {
+    await this.init();
+    this.mount();
   }
 }

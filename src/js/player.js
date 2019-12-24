@@ -17,6 +17,8 @@ const characterList = {
   '剑谷高中': ['椿野美幸', '依藤澄子', '古冢梢', '森垣友香', '安福莉子'],
 }
 
+window.characterList = characterList;
+
 function getRandomName() {
   const schoolList = Object.keys(characterList);
   const school = schoolList[Math.floor(Math.random() * schoolList.length)];
@@ -24,6 +26,15 @@ function getRandomName() {
   const name = nameList[Math.floor(Math.random() * nameList.length)];
 
   return name
+}
+
+window.getRandomNames = function() {
+  let set = new Set();
+  while(set.size < 4) {
+    const name = getRandomName();
+    set.add(name)
+  }
+  return [...set]
 }
 
 function getRandomAvatar() {
@@ -38,7 +49,7 @@ class Player {
       name = getRandomName(),
       avatar = getRandomAvatar(),
       id,
-      score = 12000,
+      score = position === '东' ? 16000 : 12000,
       richi = false
     } = options;
 
@@ -150,7 +161,7 @@ class Player {
 
     if (this.isShowResult) {
       scoreContainer.innerHTML =
-        `<span class="score-result-container">${score}<span class="score-result"><br/>${this.result}</span></span>`
+        `<span class="score-result-container">${this.record}<span class="score-result"><br/>${this.result}</span></span>`
       richiButton.disabled = true;
       ronButton.disabled = true;
       tsumoButton.disabled = true;
