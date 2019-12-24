@@ -260,7 +260,8 @@ body {
   line-height: 1.5;
   background-color: white;
   border-radius: 4px;
-  width: 9rem;
+  min-width: 9rem;
+  width: 100%;
 }
 
 .status .richi .richi-info,
@@ -318,6 +319,7 @@ body {
 .next-round,
 .draw-button,
 .multi-ron-button {
+  min-width: 9rem;
   width: 100%;
   line-height: 2;
   background-color: white;
