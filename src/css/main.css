@@ -270,11 +270,14 @@ body {
 
 .honba {
   position: relative;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: space-around;
   font-size: 0;
   background-color: white;
   border-radius: 4px;
   margin: .3rem auto;
-  padding: .2rem 0;
+  height: 1.5rem;
 }
 
 .honba-dot {

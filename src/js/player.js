@@ -17,33 +17,61 @@ const characterList = {
   '剑谷高中': ['椿野美幸', '依藤澄子', '古冢梢', '森垣友香', '安福莉子'],
 }
 
+function getRandomName() {
+  const schoolList = Object.keys(characterList);
+  const school = schoolList[Math.floor(Math.random() * schoolList.length)];
+  const nameList = characterList[school];
+  const name = nameList[Math.floor(Math.random() * nameList.length)];
+
+  return name
+}
+
+function getRandomAvatar() {
+  const index = Math.floor(Math.random() * 35);
+  return '64978502_p' + index
+}
+
 class Player {
-  constructor(position, beginPoints, character, id, score) {
-    this.position = position;
-    this.points = beginPoints;
-    this.character = character /* {name, avatar} */ ;
+  constructor(options = {}) {
+    const {
+      position,
+      name = getRandomName(),
+      avatar = getRandomAvatar(),
+      id,
+      score = 12000,
+      richi = false
+    } = options;
+
+    this.position = position; // 东西南北
+    this.name = name;
+    this.avatar = avatar; // 64978502_p5
     this.id = id; // id: number
-    this.identity = 'player' + id;
     this.score = score;
-    this.richi = false;
+
+    this.richi = richi; // default false
     this.container = null
+    this.identity = 'player' + id;
   }
 
   render() {
     const htmlTemplate = `
-    <div class="position">
-      ${this.position}
-    </div>
-    <div class="avatar">
-      <span class="player-score">${this.score}</span>
-      <img src="./img/player/64978502_p${this.avatar || 1}.png" alt="${this.identity}">
-      <span class="player-name">${this.identity}</span>
-    </div>
-    <div class="actions">
-      <button class="ron">胡</button>
-      <button class="tsumo">自摸</button>
-      <button class="richi">立直</button>
-    </div>
+      <div class="player-position">
+        <span class="position">${this.position}</span>
+      </div>
+
+      <div class="player-main">
+        <button class="richi ${this.richi ? 'active' : ''}">立直</button>
+        <span class="player-score">${this.score}</span>
+        <div class="player-info">
+          <img src="./img/player/${this.avatar}.png" alt="${this.identity}">
+          <span class="player-name">${this.name}<span>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="ron">ロン</button>
+        <button class="tsumo">ツモ</button>
+      </div>
     `;
     const container = document.createElement('div');
     container.innerHTML = htmlTemplate;
@@ -54,16 +82,49 @@ class Player {
     return container
   }
 
+  bindEvent(query, cb) {
+    if (!cb) {
+      throw new Error('you should provide a callback');
+    }
+    const dom = this.container.querySelector(query);
+    if (!dom) {
+      throw new Error('can\'t bind event: ', query);
+    }
+    console.log('bind')
+    dom.addEventListener('click', event => cb(this, event), false)
+  }
+
+  onRichi(cb) {
+    console.log('23333')
+    this.bindEvent('.richi', cb)
+  }
+
+  onRon(cb) {
+    this.bindEvent('.ron', cb)
+  }
+
+  onTsumo(cb) {
+    this.bindEvent('.tsumo', cb)
+  }
+
   update() {
     if (!this.container) {
       throw new Error('you should call player render() before update...')
     }
 
+    const {
+      richi,
+      score
+    } = this;
+    const richiButton = this.container.querySelector('.richi');
+    const scoreContainer = this.container.querySelector('.player-score');
+
+    richiButton.classList.remove('active');
+
+    if (richi) {
+      richiButton.classList.add('active');
+    }
+
+    scoreContainer.innerHTML = score;
   }
-}
-
-{
-  /* <div class="player player1" id="player1">
-
-  </div> */
 }
