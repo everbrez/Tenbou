@@ -2,7 +2,7 @@ class Dialog {
   constructor() {
     const instance = document.querySelector('.dialog');
     if (instance) {
-      // instance.remove();
+      instance.remove();
     }
   }
   showUserConfigDialog() {
@@ -74,7 +74,11 @@ class Dialog {
       }, false);
 
       randomPosButton.addEventListener('click', () => {
-        startPos = Math.floor(Math.random() * 4);
+        let temp = startPos
+        while(temp === startPos) {
+          startPos = Math.floor(Math.random() * 4);
+        }
+
         positions.forEach((el, index) => {
           el.innerHTML = '东南西北'[(index - startPos + 1 + 4) % 4];
         });
@@ -216,6 +220,7 @@ class Dialog {
     return new Promise(resolve => {
       const htmlTemplate = `
       <div class="dialog-container">
+<<<<<<< HEAD
         <form id="multiRon-form">
           <div>
             放铳玩家:
@@ -239,6 +244,28 @@ class Dialog {
           <button type="button" id="cancel-button">cancel</button>
         </form>
       </div>`;
+=======
+      <form id="multiRon-form">
+        <div>
+          放铳玩家:
+          ${players.map((player, index) => `
+          <label for="loser-${index}">
+            <input type="radio" name="loser" id="loser-${index}" value="${player.id}">
+            ${player.name}
+          </label>
+          `).join('')}
+        </div>
+  
+        <div>
+          和牌玩家:
+          ${players.map((player, index)=> `
+          <label for="ron-${index}">
+            <input type="checkbox" name="ron" id="ron-${index}" value="${player.id}">
+            ${player.name}
+          </label>
+          `).join('')}
+        </div>
+>>>>>>> 2202c3a2ba5428b7c7e575ac269848ba6de2b8d5
 
       const container = document.createElement('div');
       container.className = 'dialog';

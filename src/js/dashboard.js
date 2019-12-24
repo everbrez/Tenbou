@@ -58,6 +58,7 @@ class DashBoard {
       </h2>
       <button class="draw-button">流局</button>
       <button class="multi-ron-button">多家和</button>
+      <br />
       <button class="next-round hidden">Next Round</button>
     </div>`;
 
