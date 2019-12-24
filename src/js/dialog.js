@@ -35,7 +35,7 @@ class Dialog {
             </div>
         </div>
       </form>
-    </div>`
+    </div>`;
 
       const container = document.createElement('div');
       container.className = 'dialog user-name-dialog';
@@ -65,9 +65,9 @@ class Dialog {
           return new Player({
             id: index + 1,
             name,
-            position: '东南西北' [(index - startPos +
+            position: '东南西北'[(index - startPos +
               1 + 4) % 4],
-          })
+          });
         }));
         event.preventDefault();
         event.stopPropagation();
@@ -80,7 +80,7 @@ class Dialog {
         }
 
         positions.forEach((el, index) => {
-          el.innerHTML = '东南西北' [(index - startPos + 1 + 4) % 4];
+          el.innerHTML = '东南西北'[(index - startPos + 1 + 4) % 4];
         });
       });
 
@@ -97,14 +97,14 @@ class Dialog {
   showDiceDialog() {
     return new Promise(resolve => {
 
-    })
+    });
   }
 
   showRoundEndDialog(isTsumo = false) {
     return new Promise(resolve => {
       const loser = ['上家', '对家', '下家'];
-      const fans = ['1翻', '2翻', '3翻', '4翻', '5翻', '6-7翻', '8-10翻',
-        '11-12翻', '役满', '2倍役满', '3倍役满', '4倍役满', '5倍役满', '6倍役满'
+      const fans = ['1翻', '2翻', '3翻', '4翻', '满贯（4-5翻）', '跳满（6-7翻）', '倍满（8-10翻）',
+        '三倍满（11-12翻）', '役满', '2倍役满', '3倍役满', '4倍役满', '5倍役满', '6倍役满'
       ];
       const fus = ['20符', '25符', '30符', '40符', '50符', '60符', '70符', '80符',
         '90符', '100符', '110符'
@@ -139,7 +139,7 @@ class Dialog {
         <button type="submit">确定</button>
         <button type="button" id="cancel-button">cancel</button>
       </form>
-    </div>`
+    </div>`;
 
       const container = document.createElement('div');
       container.className = 'dialog';
@@ -153,26 +153,26 @@ class Dialog {
       cancelButton.addEventListener('click', () => {
         container.remove();
         resolve(false);
-      })
+      });
       roundEndForm.addEventListener('submit', event => {
         event.preventDefault();
         event.stopPropagation();
         const formData = new FormData(roundEndForm);
-        const result = {}
+        const result = {};
         let count = 0;
         for (const entry of formData) {
           const [field, value] = entry;
-          result[field] = value
+          result[field] = value;
           count += 1;
         }
         if (count < 3 && !isTsumo) {
-          alert('请填写放铳玩家')
+          alert('请填写放铳玩家');
           return;
         }
         container.remove();
         resolve(result);
-      }, false)
-    })
+      }, false);
+    });
   }
 
   showDrawDialog() {
@@ -180,48 +180,71 @@ class Dialog {
       const options = ['普通流局', '途中流局（连庄）', '途中流局（轮庄）', '特殊流局'];
       const htmlTemplate = `
       <div class="dialog-container">
-      <form id="draw-form">
-        <select name="draw" id="draw">
-          ${options.map(option => `
-            <option value="${option}">${option}</option>
-          `).join('')}
-        </select>
-        <button type="submit">submit</button>
-        <button type="button" id="cancel-button">cancel</button>
-      </form>
-    </div>`
+        <form id="draw-form">
+          <select name="draw" id="draw">
+            ${options.map(option => `
+              <option value="${option}">${option}</option>
+            `).join('')}
+          </select>
+          <button type="submit">submit</button>
+          <button type="button" id="cancel-button">cancel</button>
+        </form>
+      </div>`;
 
-    const container = document.createElement('div');
-    container.className = 'dialog';
-    container.innerHTML = htmlTemplate;
-    document.body.append(container);
+      const container = document.createElement('div');
+      container.className = 'dialog';
+      container.innerHTML = htmlTemplate;
+      document.body.append(container);
 
+      const form = container.querySelector('#draw-form');
+      const cancelButton = container.querySelector('#cancel-button');
+      form.addEventListener('submit', event => {
+        event.preventDefault();
+        event.stopPropagation();
 
-    const form = container.querySelector('#draw-form');
-    const cancelButton = container.querySelector('#cancel-button');
-    form.addEventListener('submit', event => {
-      event.preventDefault();
-      event.stopPropagation();
+        const formData = new FormData(form);
 
-      const formData = new FormData(form);
+        const data = formData.get('draw');
+        container.remove();
+        resolve(data);
+      }, false);
 
-      const data = formData.get('draw');
-      container.remove();
-      resolve(data);
-    }, false);
-
-    cancelButton.addEventListener('click', () => {
-      container.remove();
-      resolve(false)
-    }, false)
-
-    })
+      cancelButton.addEventListener('click', () => {
+        container.remove();
+        resolve(false);
+      }, false);
+    });
   }
 
   showMultiRonDialog(players) {
     return new Promise(resolve => {
       const htmlTemplate = `
       <div class="dialog-container">
+<<<<<<< HEAD
+        <form id="multiRon-form">
+          <div>
+            放铳玩家:
+            ${players.map((player, index) => `
+            <label for="loser-${index}">
+              <input type="radio" name="loser" id="loser-${index}" value="${player.id}">
+            </label>
+            `).join('')}
+          </div>
+
+          <div>
+            和牌玩家:
+            ${players.map((player, index) => `
+            <label for="ron-${index}">
+              <input type="checkbox" name="ron" id="ron-${index}" value="${player.id}">
+            </label>
+            `).join('')}
+          </div>
+
+          <button type="submit">submit</button>
+          <button type="button" id="cancel-button">cancel</button>
+        </form>
+      </div>`;
+=======
       <form id="multiRon-form">
         <div>
           放铳玩家:
@@ -242,17 +265,13 @@ class Dialog {
           </label>
           `).join('')}
         </div>
+>>>>>>> 2202c3a2ba5428b7c7e575ac269848ba6de2b8d5
 
-        <button type="submit">submit</button>
-        <button type="button" id="cancel-button">cancel</button>
-      </form>
-    </div>
-      `
       const container = document.createElement('div');
       container.className = 'dialog';
       container.innerHTML = htmlTemplate;
 
-      document.body.appendChild(container)
+      document.body.appendChild(container);
 
       const form = container.querySelector('#multiRon-form');
       const cancelButton = container.querySelector('#cancel-button');
@@ -266,7 +285,7 @@ class Dialog {
         const result = {
           loser: formData.get('loser'),
           ron: formData.getAll('ron')
-        }
+        };
 
         console.log(result);
         container.remove();
@@ -275,8 +294,8 @@ class Dialog {
 
       cancelButton.addEventListener('click', () => {
         container.remove();
-        resolve(false)
-      }, false)
-    })
+        resolve(false);
+      }, false);
+    });
   }
 }
