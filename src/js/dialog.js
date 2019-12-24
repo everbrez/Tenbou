@@ -228,6 +228,7 @@ class Dialog {
           ${players.map((player, index) => `
           <label for="loser-${index}">
             <input type="radio" name="loser" id="loser-${index}" value="${player.id}">
+            ${player.name}
           </label>
           `).join('')}
         </div>
@@ -237,6 +238,7 @@ class Dialog {
           ${players.map((player, index)=> `
           <label for="ron-${index}">
             <input type="checkbox" name="ron" id="ron-${index}" value="${player.id}">
+            ${player.name}
           </label>
           `).join('')}
         </div>
