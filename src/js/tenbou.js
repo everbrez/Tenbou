@@ -34,6 +34,8 @@ class Tenbou {
   async init() {
     // 此处get用户的设置，初始化player
     let dialog = new Dialog();
+    const config = await dialog.showConfigDialog();
+    this.config = config || window.configSetting;
     // 读取用户设置的 palyer 信息，包括名字，startPos等
     const players = await dialog.showUserConfigDialog();
 

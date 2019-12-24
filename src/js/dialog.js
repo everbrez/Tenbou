@@ -65,7 +65,7 @@ class Dialog {
           return new Player({
             id: index + 1,
             name,
-            position: '东南西北'[(index - startPos +
+            position: '东南西北' [(index - startPos +
               1 + 4) % 4],
           });
         }));
@@ -75,12 +75,12 @@ class Dialog {
 
       randomPosButton.addEventListener('click', () => {
         let temp = startPos
-        while(temp === startPos) {
+        while (temp === startPos) {
           startPos = Math.floor(Math.random() * 4);
         }
 
         positions.forEach((el, index) => {
-          el.innerHTML = '东南西北'[(index - startPos + 1 + 4) % 4];
+          el.innerHTML = '东南西北' [(index - startPos + 1 + 4) % 4];
         });
       });
 
@@ -94,6 +94,7 @@ class Dialog {
     })
   }
 
+  // TODO: 添加骰子功能
   showDiceDialog() {
     return new Promise(resolve => {
 
@@ -103,7 +104,8 @@ class Dialog {
   showRoundEndDialog(isTsumo = false) {
     return new Promise(resolve => {
       const loser = ['上家', '对家', '下家'];
-      const fans = ['1翻', '2翻', '3翻', '4翻', '满贯（4-5翻）', '跳满（6-7翻）', '倍满（8-10翻）',
+      const fans = ['1翻', '2翻', '3翻', '4翻', '满贯（4-5翻）', '跳满（6-7翻）',
+        '倍满（8-10翻）',
         '三倍满（11-12翻）', '役满', '2倍役满', '3倍役满', '4倍役满', '5倍役满', '6倍役满'
       ];
       const fus = ['20符', '25符', '30符', '40符', '50符', '60符', '70符', '80符',
@@ -274,5 +276,133 @@ class Dialog {
         resolve(false);
       }, false);
     });
+  }
+
+  showConfigDialog() {
+    return new Promise(resolve => {
+      const setting = window.configSetting;
+      // 0: 'bool',
+      // 1: 'singleNumber',
+      // 2: 'multiNumber',
+      // 3: 'singleSelect',
+      // 4: 'multiSelect'
+
+      const result = Object.keys(setting).map(key => {
+        const config = setting[key];
+        switch(config.pattern) {
+          case 0: 
+            return `
+            <div>
+              ${key}：
+              <label for="${key}-yes">
+                <input type="radio" name="${key}" id="${key}-yes" value="true" ${config.default ? 'checked': ''}>
+                是
+              </label>
+              <label for="${key}-no">
+                <input type="radio" name="${key}" id="${key}-no" value="" ${config.default ? '': 'checked'}>
+                否
+              </label>
+            </div>
+            `
+          case 1:
+            return `
+            <div>
+              ${key}：
+              <input type="number" name="${key}" id="${key}" value="${config.default}">
+            </div>
+            `
+          case 2:
+            return `
+            <div>
+              ${key}：
+              ${config.default.map(num => `
+              <input type="number" name="${key}" value="${num}">
+              `).join('')}
+            </div>
+            `
+          case 3:
+            return `
+            <div>
+              ${key}：
+                ${config.list.map((item, index) => `
+                <label for="${key}-${item}">
+                  <input type="radio" name="${key}" id="${key}-${item}" value="${index}" ${config.default === index ? 'checked' : ''}>
+                  ${item}
+                </label>
+                `).join('')}
+            </div>
+            `
+          case 4:
+            return `
+            <div>
+              ${key}：
+              ${config.list.map((item, index) => `
+              <label>
+                <input type="checkbox" name="${key}" id="${key}-${item}" value="${index}" ${config.default.includes(index) ? 'checked' : ''}>
+                ${item}
+              </label>
+              `)}
+            </div>
+            `
+          default:
+        }
+      }).join('');
+
+      const htmlTemplate = `
+      <div class="dialog-container">
+        <form id="config-form">
+          ${result}
+          <div>
+            <button type="submit">submit</button>
+            <button type="button" id="default-config-button">use default setting</button>
+          </div>
+        </form>
+      </div>`
+
+      const container = document.createElement('div');
+      container.className = 'dialog';
+      container.innerHTML = htmlTemplate;
+      document.body.append(container);
+
+      const form = container.querySelector('#config-form');
+      const defaultConfigButton = container.querySelector('#default-config-button');
+
+      form.addEventListener('submit', event => {
+        event.preventDefault();
+        event.stopPropagation();
+
+        const formData = new FormData(form);
+        Object.keys(setting).map(key => {
+          const config = setting[key];
+          switch(config.pattern) {
+            case 0:
+              setting[key].select = !!formData.get(key);
+              break;
+            case 1:
+              setting[key].select = +formData.get(key);
+              break;
+            case 2:
+              setting[key].select = formData.getAll(key).map(Number);
+              break;
+            case 3:
+              setting[key].select = formData.get(key);
+              break;
+            case 4:
+              setting[key].select = formData.getAll(key);
+              break;
+            default:
+          }
+        })
+
+        container.remove();
+        resolve(setting)
+      }, false);
+
+      defaultConfigButton.addEventListener('click', () => {
+        container.remove();
+        resolve(window.configSetting);
+      }, false);
+
+    })
   }
 }
