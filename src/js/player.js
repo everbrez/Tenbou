@@ -38,13 +38,8 @@ window.getRandomNames = function () {
 }
 
 function getRandomAvatar() {
-<<<<<<< HEAD
-  const index = Math.floor(Math.random() * 35);
-  return '64978502_p' + index;
-=======
   const index = Math.floor(Math.random() * 34);
   return '64978502_p' + (index + 1);
->>>>>>> 2202c3a2ba5428b7c7e575ac269848ba6de2b8d5
 }
 
 class Player {
