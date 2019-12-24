@@ -2,7 +2,7 @@ class Dialog {
   constructor() {
     const instance = document.querySelector('.dialog');
     if (instance) {
-      // instance.remove();
+      instance.remove();
     }
   }
   showUserConfigDialog() {
@@ -74,7 +74,11 @@ class Dialog {
       }, false);
 
       randomPosButton.addEventListener('click', () => {
-        startPos = Math.floor(Math.random() * 4);
+        let temp = startPos
+        while(temp === startPos) {
+          startPos = Math.floor(Math.random() * 4);
+        }
+
         positions.forEach((el, index) => {
           el.innerHTML = '东南西北' [(index - startPos + 1 + 4) % 4];
         });
