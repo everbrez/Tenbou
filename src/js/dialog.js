@@ -5,37 +5,38 @@ class Dialog {
       instance.remove();
     }
   }
+
   showUserConfigDialog() {
     return new Promise((resolve, reject) => {
       const htmlTemplate = `
-    <div class="dialog-container">
-      <form id="player-name-form">
-        <div class="field-name">
-          <label for="player1">
-            <span class="position">东</span>:
-            <input placeholder="player1" name="player1" id="player1">
-          </label>
+        <div class="dialog-container">
+          <form id="player-name-form">
+            <div class="field-name">
+              <label for="player1">
+                <span class="position">东</span>:
+                <input placeholder="player1" name="player1" id="player1">
+              </label>
 
-          <label for="player2">
-            <span class="position">南</span>:
-            <input placeholder="player2" name="player2" id="player2">
-          </label>
-          <label for="player3">
-            <span class="position">西</span>:
-            <input placeholder="player3" name="player3" id="player3">
-          </label>
-          <label for="player4">
-            <span class="position">北</span>:
-            <input placeholder="player4" name="player4" id="player4">
-          </label>
-            <div class="buttons-container">
-              <button type="button" id="random-direction-button">random direction</button>
-            <button type="button" id="random-name-button">random name</button>
-            <button type="submit" id="submit-button">submit</button>
+              <label for="player2">
+                <span class="position">南</span>:
+                <input placeholder="player2" name="player2" id="player2">
+              </label>
+              <label for="player3">
+                <span class="position">西</span>:
+                <input placeholder="player3" name="player3" id="player3">
+              </label>
+              <label for="player4">
+                <span class="position">北</span>:
+                <input placeholder="player4" name="player4" id="player4">
+              </label>
+                <div class="buttons-container">
+                  <button type="button" id="random-direction-button">random direction</button>
+                <button type="button" id="random-name-button">random name</button>
+                <button type="submit" id="submit-button">submit</button>
+                </div>
             </div>
-        </div>
-      </form>
-    </div>`;
+          </form>
+        </div>`;
 
       const container = document.createElement('div');
       container.className = 'dialog user-name-dialog';
@@ -90,8 +91,8 @@ class Dialog {
         player2Dom.value = names[1];
         player3Dom.value = names[2];
         player4Dom.value = names[3];
-      })
-    })
+      });
+    });
   }
 
   showDiceDialog() {
@@ -111,35 +112,35 @@ class Dialog {
       ];
 
       const htmlTemplate = `
-      <div class="dialog-container">
-      <form id="round-end-form">
-        <div>
-          ${isTsumo ? '' : loser.map((loser, index) => `
-          <label for="loser-${index}">
-            <input type="radio" id="loser-${index}" name="loser" value="${loser}">
-          ${loser}</label>
-          `).join('')}
-        </div>
+        <div class="dialog-container">
+          <form id="round-end-form">
+            <div>
+              ${isTsumo ? '' : loser.map((loser, index) => `
+              <label for="loser-${index}">
+                <input type="radio" id="loser-${index}" name="loser" value="${loser}">
+              ${loser}</label>
+              `).join('')}
+            </div>
 
-        <div>
-        ${fans.map((fan, index) => `
-          <label for="fan-${index}">
-            <input type="radio" id="fan-${index}" name="fan" value="${fan}" ${index ? '' : 'checked'}>
-          ${fan}</label>
-        `).join('')}
-        </div>
+            <div>
+            ${fans.map((fan, index) => `
+              <label for="fan-${index}">
+                <input type="radio" id="fan-${index}" name="fan" value="${fan}" ${index ? '' : 'checked'}>
+              ${fan}</label>
+            `).join('')}
+            </div>
 
-        <div>
-        ${fus.map((fu, index) => `
-          <label for="fu-${index}">
-            <input type="radio" id="fu-${index}" name="fu" value="${fu}" ${index ? '' : 'checked'}>
-          ${fu}</label>
-        `).join('')}
-        </div>
-        <button type="submit">确定</button>
-        <button type="button" id="cancel-button">cancel</button>
-      </form>
-    </div>`;
+            <div>
+            ${fus.map((fu, index) => `
+              <label for="fu-${index}">
+                <input type="radio" id="fu-${index}" name="fu" value="${fu}" ${index ? '' : 'checked'}>
+              ${fu}</label>
+            `).join('')}
+            </div>
+            <button type="submit">确定</button>
+            <button type="button" id="cancel-button">cancel</button>
+          </form>
+        </div>`;
 
       const container = document.createElement('div');
       container.className = 'dialog';
@@ -179,17 +180,17 @@ class Dialog {
     return new Promise(resolve => {
       const options = ['普通流局', '途中流局（连庄）', '途中流局（轮庄）', '特殊流局'];
       const htmlTemplate = `
-      <div class="dialog-container">
-        <form id="draw-form">
-          <select name="draw" id="draw">
-            ${options.map(option => `
-              <option value="${option}">${option}</option>
-            `).join('')}
-          </select>
-          <button type="submit">submit</button>
-          <button type="button" id="cancel-button">cancel</button>
-        </form>
-      </div>`;
+        <div class="dialog-container">
+          <form id="draw-form">
+            <select name="draw" id="draw">
+              ${options.map(option => `
+                <option value="${option}">${option}</option>
+              `).join('')}
+            </select>
+            <button type="submit">submit</button>
+            <button type="button" id="cancel-button">cancel</button>
+          </form>
+        </div>`;
 
       const container = document.createElement('div');
       container.className = 'dialog';
@@ -219,30 +220,30 @@ class Dialog {
   showMultiRonDialog(players) {
     return new Promise(resolve => {
       const htmlTemplate = `
-      <div class="dialog-container">
-        <form id="multiRon-form">
-          <div>
-            放铳玩家:
-            ${players.map((player, index) => `
-            <label for="loser-${index}">
-              <input type="radio" name="loser" id="loser-${index}" value="${player.id}">
-            </label>
-            `).join('')}
-          </div>
+        <div class="dialog-container">
+          <form id="multiRon-form">
+            <div>
+              放铳玩家:
+              ${players.map((player, index) => `
+              <label for="loser-${index}">
+                <input type="radio" name="loser" id="loser-${index}" value="${player.id}">
+              </label>
+              `).join('')}
+            </div>
 
-          <div>
-            和牌玩家:
-            ${players.map((player, index) => `
-            <label for="ron-${index}">
-              <input type="checkbox" name="ron" id="ron-${index}" value="${player.id}">
-            </label>
-            `).join('')}
-          </div>
+            <div>
+              和牌玩家:
+              ${players.map((player, index) => `
+              <label for="ron-${index}">
+                <input type="checkbox" name="ron" id="ron-${index}" value="${player.id}">
+              </label>
+              `).join('')}
+            </div>
 
-          <button type="submit">submit</button>
-          <button type="button" id="cancel-button">cancel</button>
-        </form>
-      </div>`;
+            <button type="submit">submit</button>
+            <button type="button" id="cancel-button">cancel</button>
+          </form>
+        </div>`;
 
       const container = document.createElement('div');
       container.className = 'dialog';

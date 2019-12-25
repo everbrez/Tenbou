@@ -28,39 +28,39 @@ class DashBoard {
       roundName
     } = this;
     const htmlTemplate = `
-    <div class="status">
-      <h2 class="round">${roundName}</h2>
-      <h2 class="honba">
-        <li>
-          <span class="honba-dot"></span>
-          <span class="honba-dot"></span>
-          <span class="honba-dot"></span>
-          <span class="honba-dot"></span>
-        </li>
-        <li>
-          <span class="honba-dot"></span>
-          <span class="honba-dot"></span>
-          <span class="honba-dot"></span>
-          <span class="honba-dot"></span>
-        </li>
-        <span class="honba-info">
-          ×
-          <span class="honba-number">${honba}</span>
-        </span>
+      <div class="status">
+        <h2 class="round">${roundName}</h2>
+        <h2 class="honba">
+          <li>
+            <span class="honba-dot"></span>
+            <span class="honba-dot"></span>
+            <span class="honba-dot"></span>
+            <span class="honba-dot"></span>
+          </li>
+          <li>
+            <span class="honba-dot"></span>
+            <span class="honba-dot"></span>
+            <span class="honba-dot"></span>
+            <span class="honba-dot"></span>
+          </li>
+          <span class="honba-info">
+            ×
+            <span class="honba-number">${honba}</span>
+          </span>
 
-      </h2>
-      <h2 class="richi">
-        立直
-        <span class="richi-info">
-          ×
-          <span class="richi-number">${richi}</span>
-        </span>
-      </h2>
-      <button class="draw-button">流局</button>
-      <button class="multi-ron-button">多家和</button>
-      <br />
-      <button class="next-round hidden">Next Round</button>
-    </div>`;
+        </h2>
+        <h2 class="richi">
+          立直
+          <span class="richi-info">
+            ×
+            <span class="richi-number">${richi}</span>
+          </span>
+        </h2>
+        <button class="draw-button">流局</button>
+        <button class="multi-ron-button">多家和</button>
+        <br />
+        <button class="next-round hidden">Next Round</button>
+      </div>`;
 
     this.container = document.createElement('div');
     this.container.className = 'main';
