@@ -1,8 +1,8 @@
 window.addEventListener('load', main, false);
 
 function main() {
-  window.a = new Tenbou();
-  a.on('richi', (state, config, player) => {
+  const game = new Tenbou();
+  game.on('richi', (state, config, player) => {
     console.log(state);
     console.log(config);
     console.log(player);
@@ -22,7 +22,9 @@ function main() {
     return state;
   });
 
-  a.on('beforeroundend', (state, config, player, Tenbou, type) => {
+  game.on('beforeroundend', (state, config, player, Tenbou, type, data) => {
+    // data 为用户在选择tsumo、ron、流局或者多人和输入的数据
+    // type 为 tsumo ron 流局（draw）或者多人和（multiRon）
     const id = player.id;
     lastPlayer = state.players[(id - 1 - 1 + 4) % 4];
     player.score += 10000;
@@ -30,18 +32,18 @@ function main() {
     return state;
   });
 
-  a.on('roundend', (state, config, player, Tenbou, type) => {
+  game.on('roundend', (state, config, player, Tenbou, type) => {
     if (player.score > 42000) {
       Tenbou.gameover('点数超过42000');
     }
   });
 
-  a.on('afterroundend', (state, _config, _player, Tenbou) => {
+  game.on('afterroundend', (state, _config, _player, Tenbou) => {
     state.dashboard.honba += 1;
     if (state.dashboard.roundName === '南四局') {
       Tenbou.gameover('正常流局');
     }
   });
 
-  a.start();
+  game.start();
 }
