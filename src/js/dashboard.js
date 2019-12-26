@@ -13,12 +13,27 @@ class DashBoard {
     this.honba = honba;
     this.round = round;
     this.roundNames = roundNames;
+    // 是否为结果界面，如果是结果界面需要禁用一些按钮
     this.isShowResult = false;
 
+    // 根据round来获取当前局的名称
     this.roundName = this.roundNames[round - 1];
 
     this.container = null;
     this.isShowNextRoundButton = false;
+  }
+
+  reset() {
+    this.richi = 0;
+    this.honba = 0;
+    this.round = 1;
+    this.roundName = this.roundNames[this.round - 1]
+    this.isShowNextRoundButton = false;
+    this.isShowResult = false;
+  }
+
+  unmout() {
+    this.container.remove();
   }
 
   render() {
@@ -27,8 +42,8 @@ class DashBoard {
       honba,
       roundName
     } = this;
-    const htmlTemplate = `
-      <div class="status">
+    const htmlTemplate =
+      `<div class="status">
         <h2 class="round">${roundName}</h2>
         <h2 class="honba">
           <li>
@@ -128,6 +143,7 @@ class DashBoard {
     this.roundName = this.roundNames[this.round - 1];
   }
 
+  // 流局 按钮
   onDraw(cb) {
     if (!cb) {
       throw new Error('you should provide an callback');
@@ -137,6 +153,7 @@ class DashBoard {
     drawButton.addEventListener('click', cb, false);
   }
 
+  // 多人和 按钮
   onMultiRon(cb) {
     if (!cb) {
       throw new Error('you should provide an callback');

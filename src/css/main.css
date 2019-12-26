@@ -223,7 +223,7 @@ body {
   transform: rotate(180deg)
 }
 
-.player2 {
+.player4 {
   right: 0;
   top: 0;
   bottom: 0;
@@ -237,7 +237,7 @@ body {
   bottom: 0;
 }
 
-.player4 {
+.player2 {
   left: 0;
   top: 0;
   bottom: 0;
@@ -334,23 +334,25 @@ body {
   bottom: 0;
   left: 0;
   right: 0;
-
+  overflow: auto;
   background-color: white;
+}
+
+.dialog label {
+  display: inline-block;
+  white-space: nowrap;
+  padding: .3rem .5rem;
 }
 
 .dialog-container {
   width: 100%;
-  max-width: 500px;
+  max-width: 768px;
   margin: auto;
   padding-top: 1rem;
 }
 
 .user-name-dialog label {
   display: block;
-}
-
-.user-name-dialog label+label {
-  margin-top: 1rem;
 }
 
 .dialog .position {
@@ -365,11 +367,98 @@ body {
   max-width: 100%;
   padding: .2rem .5rem;
   background: none;
-  border: 1px solid lightslategray;
+  border: 1px solid #ccc;
   border-radius: 4px;
   margin-top: .3rem;
 }
 
-.dialog .buttons-container {
-  margin: 1rem 0 0 2rem;
+.dialog button{
+  margin-left: .5rem;
+  margin-right: .5rem;
+}
+
+.dialog button:hover {
+  background-color: #ccc;
+  color: white;
+}
+
+.dialog form > div {
+  display: flex;
+  flex-flow: row nowrap;
+  padding: .2rem 0;
+}
+
+.dialog form input[type="number"] {
+  width: 4rem;
+}
+
+.dialog .form-label {
+  display: inline-block;
+  text-align: right;
+  flex: 0 1 30%;
+  height: 100%;
+}
+
+.dialog .form-field {
+  display: inline-block;
+  flex: 1;
+  padding-left: .5rem;
+}
+
+.dialog .config-buttons-container,
+.roundend-button-container {
+  margin-left: 30%;
+}
+
+.dialog input {
+  background: none;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding-left: 1em;
+  line-height: 1.5;
+}
+
+#player-name-form > div{
+  justify-content: center;
+}
+
+#player-name-form .buttons-container{
+  display: block;
+  flex-flow: column nowrap;
+}
+
+#player-name-form .buttons-container button {
+  margin: auto;
+  margin-top: .5rem;
+}
+
+.draw-button-containers, .multi-buttons-container {
+  justify-content: center;
+}
+
+.result-player .player-name {
+  font-size: 4rem;
+}
+
+.winner {
+  color: red;
+}
+
+.winner .player-name {
+  font-size: 5rem;
+}
+
+.result-player {
+  margin: 1rem 0;
+}
+
+.result-player .player-score {
+  display: inline-block;
+  font-size: 3rem;
+  transform: translateY(30%);
+}
+
+.result-player .result-buttons-container {
+  display: flex;
+  justify-content: flex-end;
 }

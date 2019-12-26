@@ -8,32 +8,41 @@ class Dialog {
 
   showUserConfigDialog() {
     return new Promise((resolve, reject) => {
-      const htmlTemplate = `
-        <div class="dialog-container">
+      const htmlTemplate =
+        `<div class="dialog-container">
           <form id="player-name-form">
-            <div class="field-name">
-              <label for="player1">
-                <span class="position">东</span>:
-                <input placeholder="player1" name="player1" id="player1">
-              </label>
+            <div>
+            <label for="player1">
+              <span class="position">东</span>:
+              <input placeholder="player1" name="player1" id="player1">
+            </label>
+            </div>
 
-              <label for="player2">
-                <span class="position">南</span>:
-                <input placeholder="player2" name="player2" id="player2">
-              </label>
-              <label for="player3">
-                <span class="position">西</span>:
-                <input placeholder="player3" name="player3" id="player3">
-              </label>
-              <label for="player4">
-                <span class="position">北</span>:
-                <input placeholder="player4" name="player4" id="player4">
-              </label>
-                <div class="buttons-container">
-                  <button type="button" id="random-direction-button">random direction</button>
-                <button type="button" id="random-name-button">random name</button>
-                <button type="submit" id="submit-button">submit</button>
-                </div>
+            <div>
+            <label for="player2">
+              <span class="position">南</span>:
+              <input placeholder="player2" name="player2" id="player2">
+            </label>
+            </div>
+
+            <div>
+            <label for="player3">
+              <span class="position">西</span>:
+              <input placeholder="player3" name="player3" id="player3">
+            </label>
+            </div>
+
+            <div>
+            <label for="player4">
+              <span class="position">北</span>:
+              <input placeholder="player4" name="player4" id="player4">
+            </label>
+            </div>
+
+            <div class="buttons-container">
+              <button type="button" id="random-direction-button">random direction</button>
+            <button type="button" id="random-name-button">random name</button>
+            <button type="submit" id="submit-button">submit</button>
             </div>
           </form>
         </div>`;
@@ -75,8 +84,8 @@ class Dialog {
       }, false);
 
       randomPosButton.addEventListener('click', () => {
-        let temp = startPos
-        while(temp === startPos) {
+        let temp = startPos;
+        while (temp === startPos) {
           startPos = Math.floor(Math.random() * 4);
         }
 
@@ -95,6 +104,7 @@ class Dialog {
     });
   }
 
+  // TODO: 添加骰子功能
   showDiceDialog() {
     return new Promise(resolve => {
 
@@ -104,43 +114,56 @@ class Dialog {
   showRoundEndDialog(isTsumo = false) {
     return new Promise(resolve => {
       const loser = ['上家', '对家', '下家'];
-      const fans = ['1翻', '2翻', '3翻', '4翻', '满贯（4-5翻）', '跳满（6-7翻）', '倍满（8-10翻）',
+      const fans = ['1翻', '2翻', '3翻', '4翻', '满贯（4-5翻）', '跳满（6-7翻）',
+        '倍满（8-10翻）',
         '三倍满（11-12翻）', '役满', '2倍役满', '3倍役满', '4倍役满', '5倍役满', '6倍役满'
       ];
       const fus = ['20符', '25符', '30符', '40符', '50符', '60符', '70符', '80符',
         '90符', '100符', '110符'
       ];
 
-      const htmlTemplate = `
-        <div class="dialog-container">
-          <form id="round-end-form">
-            <div>
+      const htmlTemplate =
+      `<div class="dialog-container">
+        <form id="round-end-form">
+          <div>
+            <span class="form-label">放铳玩家：</span>
+            <div class="form-field">
               ${isTsumo ? '' : loser.map((loser, index) => `
               <label for="loser-${index}">
                 <input type="radio" id="loser-${index}" name="loser" value="${loser}">
               ${loser}</label>
               `).join('')}
             </div>
+          </div>
 
-            <div>
+          <div>
+            <span class="form-label">选择翻：</span>
+            <div class="form-field">
             ${fans.map((fan, index) => `
               <label for="fan-${index}">
                 <input type="radio" id="fan-${index}" name="fan" value="${fan}" ${index ? '' : 'checked'}>
               ${fan}</label>
             `).join('')}
             </div>
+          </div>
 
-            <div>
+          <div>
+            <span class="form-label">选择符：</span>
+            <div class="form-field">
             ${fus.map((fu, index) => `
               <label for="fu-${index}">
                 <input type="radio" id="fu-${index}" name="fu" value="${fu}" ${index ? '' : 'checked'}>
               ${fu}</label>
             `).join('')}
             </div>
+          </div>
+
+          <div class="roundend-button-container">
             <button type="submit">确定</button>
             <button type="button" id="cancel-button">cancel</button>
-          </form>
-        </div>`;
+          </div>
+        </form>
+      </div>`;
 
       const container = document.createElement('div');
       container.className = 'dialog';
@@ -179,16 +202,22 @@ class Dialog {
   showDrawDialog() {
     return new Promise(resolve => {
       const options = ['普通流局', '途中流局（连庄）', '途中流局（轮庄）', '特殊流局'];
-      const htmlTemplate = `
-        <div class="dialog-container">
+      const htmlTemplate =
+        `<div class="dialog-container">
           <form id="draw-form">
-            <select name="draw" id="draw">
-              ${options.map(option => `
-                <option value="${option}">${option}</option>
+            <span class="form-label">流局类型：</span>
+            <div class="form-field">
+              ${options.map((type, index) => `
+              <label for="draw-${index}">
+                <input type="radio" value="${type}" name="draw-type" id="draw-${index}" ${index ? '' : 'checked'}/>
+                ${type}
+              </label>
               `).join('')}
-            </select>
-            <button type="submit">submit</button>
-            <button type="button" id="cancel-button">cancel</button>
+            </div>
+            <div class="draw-button-containers">
+              <button type="submit">submit</button>
+              <button type="button" id="cancel-button">cancel</button>
+            </div>
           </form>
         </div>`;
 
@@ -205,7 +234,7 @@ class Dialog {
 
         const formData = new FormData(form);
 
-        const data = formData.get('draw');
+        const data = formData.get('draw-type');
         container.remove();
         resolve(data);
       }, false);
@@ -219,31 +248,39 @@ class Dialog {
 
   showMultiRonDialog(players) {
     return new Promise(resolve => {
-      const htmlTemplate = `
-        <div class="dialog-container">
-          <form id="multiRon-form">
-            <div>
-              放铳玩家:
+      const htmlTemplate =
+      `<div class="dialog-container">
+        <form id="multiRon-form">
+          <div>
+            <span class="form-label">放铳玩家：</span>
+            <div class="form-field">
               ${players.map((player, index) => `
               <label for="loser-${index}">
                 <input type="radio" name="loser" id="loser-${index}" value="${player.id}">
+                ${player.name}
               </label>
               `).join('')}
             </div>
+          </div>
 
-            <div>
-              和牌玩家:
+          <div>
+            <span class="form-label">和牌玩家：</span>
+            <div class="form-field">
               ${players.map((player, index) => `
               <label for="ron-${index}">
                 <input type="checkbox" name="ron" id="ron-${index}" value="${player.id}">
+                ${player.name}
               </label>
               `).join('')}
             </div>
+          </div>
 
+          <div class="multi-buttons-container">
             <button type="submit">submit</button>
             <button type="button" id="cancel-button">cancel</button>
-          </form>
-        </div>`;
+          </div>
+        </form>
+      </div>`;
 
       const container = document.createElement('div');
       container.className = 'dialog';
@@ -271,6 +308,188 @@ class Dialog {
       }, false);
 
       cancelButton.addEventListener('click', () => {
+        container.remove();
+        resolve(false);
+      }, false);
+    });
+  }
+
+  showConfigDialog() {
+    return new Promise(resolve => {
+      const setting = window.configSetting;
+      // 0: 'bool',
+      // 1: 'singleNumber',
+      // 2: 'multiNumber',
+      // 3: 'singleSelect',
+      // 4: 'multiSelect'
+
+      const result = Object.keys(setting).map(key => {
+        const config = setting[key];
+        switch (config.pattern) {
+          case 0:
+            return `
+            <div>
+              <span class="form-label">${key}：</span>
+              <div class="form-field">
+              <label for="${key}-yes">
+                <input type="radio" name="${key}" id="${key}-yes" value="true" ${config.default ? 'checked' : ''}>
+                是
+              </label>
+              <label for="${key}-no">
+                <input type="radio" name="${key}" id="${key}-no" value="" ${config.default ? '' : 'checked'}>
+                否
+              </label>
+              </div>
+            </div>`;
+
+          case 1:
+            return `
+            <div>
+              <span class="form-label">${key}：</span>
+              <div class="form-field">
+              <input type="number" name="${key}" id="${key}" value="${config.default}">
+              </div>
+            </div>`;
+
+          case 2:
+            return `
+            <div>
+              <span class="form-label">${key}：</span>
+              <div class="form-field">
+                ${config.default.map(num => `
+                <input type="number" name="${key}" value="${num}">
+                `).join('')}
+              </div>
+            </div>`;
+
+          case 3:
+            return `
+            <div>
+              <span class="form-label">${key}：</span>
+              <div class="form-field">
+                ${config.list.map((item, index) => `
+                <label for="${key}-${item}">
+                  <input type="radio" name="${key}" id="${key}-${item}" value="${index}" ${config.default === index ? 'checked' : ''}>
+                  ${item}
+                </label>
+                `).join('')}
+              </div>
+            </div>`;
+
+          case 4:
+            return `
+            <div>
+              <span class="form-label">${key}：</span>
+              <div class="form-field">
+                ${config.list.map((item, index) => `
+                <label>
+                  <input type="checkbox" name="${key}" id="${key}-${item}" value="${index}" ${config.default.includes(index) ? 'checked' : ''}>
+                  ${item}
+                </label>
+                `).join('')}
+              </div>
+            </div>`;
+
+          default:
+        }
+      }).join('');
+
+      const htmlTemplate =
+      `<div class="dialog-container">
+        <form id="config-form">
+          ${result}
+          <div class="config-buttons-container">
+            <button type="submit">submit</button>
+            <button type="button" id="default-config-button">use default setting</button>
+          </div>
+        </form>
+      </div>`;
+
+      const container = document.createElement('div');
+      container.className = 'dialog';
+      container.innerHTML = htmlTemplate;
+      document.body.append(container);
+
+      const form = container.querySelector('#config-form');
+      const defaultConfigButton = container.querySelector('#default-config-button');
+
+      form.addEventListener('submit', event => {
+        event.preventDefault();
+        event.stopPropagation();
+
+        const formData = new FormData(form);
+        Object.keys(setting).map(key => {
+          const config = setting[key];
+          switch (config.pattern) {
+            case 0:
+              setting[key].select = !!formData.get(key);
+              break;
+            case 1:
+              setting[key].select = +formData.get(key);
+              break;
+            case 2:
+              setting[key].select = formData.getAll(key).map(Number);
+              break;
+            case 3:
+              setting[key].select = formData.get(key);
+              break;
+            case 4:
+              setting[key].select = formData.getAll(key);
+              break;
+            default:
+          }
+        });
+
+        container.remove();
+        resolve(setting)
+      }, false);
+
+      defaultConfigButton.addEventListener('click', () => {
+        container.remove();
+        resolve(window.configSetting);
+      }, false);
+    });
+  }
+
+  showResultDialog(playersSource = []) {
+    const players = [...playersSource];
+    players.sort((player1, player2) => player2.score - player1.score);
+
+    return new Promise(resolve => {
+      const htmlTemplate =
+        `<div class="dialog-container">
+          <h1>Result</h1>
+          ${players.map((player, index) => `
+          <div class="result-player ${index ? '' : 'winner'}">
+            <span class="player-name">
+              ${player.name}
+            </span>
+            <span class="player-score">
+              ${player.score}
+            </span>
+          </div>
+          `).join('')}
+
+          <div class="result-buttons-container">
+            <button id="continue-button">继续</button>
+            <button id="end-button">结束</button>
+          </div>
+        </div>`;
+
+      const container = document.createElement('div');
+      container.className = 'dialog';
+      container.innerHTML = htmlTemplate;
+      document.body.append(container);
+
+      const continueButton = container.querySelector('#continue-button');
+      const endButton = container.querySelector('#end-button');
+
+      continueButton.addEventListener('click', () => {
+        container.remove();
+        resolve(true);
+      }, false)
+
+      endButton.addEventListener('click', () => {
         container.remove();
         resolve(false);
       }, false);

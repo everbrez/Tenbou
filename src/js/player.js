@@ -19,6 +19,7 @@ const characterList = {
 
 window.characterList = characterList;
 
+// 随机获取一个名字
 function getRandomName() {
   const schoolList = Object.keys(characterList);
   const school = schoolList[Math.floor(Math.random() * schoolList.length)];
@@ -28,6 +29,7 @@ function getRandomName() {
   return name;
 }
 
+// 随机获取4个不同的名字
 window.getRandomNames = function () {
   let set = new Set();
   while (set.size < 4) {
@@ -37,6 +39,7 @@ window.getRandomNames = function () {
   return [...set];
 }
 
+// 随机获取一个avatar
 function getRandomAvatar() {
   const index = Math.floor(Math.random() * 34);
   return '64978502_p' + (index + 1);
@@ -49,7 +52,9 @@ class Player {
       name = getRandomName(),
       avatar = getRandomAvatar(),
       id,
+      // 默认，但是一般会在init事件中根据用户的设置来进行调整
       score = position === '东' ? 16000 : 12000,
+      // 判断是否立直
       richi = false
     } = options;
 
@@ -58,6 +63,7 @@ class Player {
     this.avatar = avatar; // 64978502_p5
     this.id = id; // id: number
     this.score = score;
+    // 存放每局结束的时候显示结算界面，player应该+还是-分数
     this.result = '+ 0';
     this.isShowResult = false;
 
@@ -66,6 +72,19 @@ class Player {
     this.identity = 'player' + id;
   }
 
+  reset() {
+    this.score = 12000;
+    this.result = '+ 0';
+    this.isShowResult = false;
+    this.richi = false;
+    this.record = undefined;
+  }
+
+  unmout() {
+    this.container.remove();
+  }
+
+  // 在进入beforeroundend事件之前，会对player的分数进行存储，用于后面计算差值。
   recordScore() {
     this.record = this.score;
   }
@@ -85,9 +104,10 @@ class Player {
     this.isShowResult = false;
   }
 
+  // 返回一个dom节点， 用于mount事件
   render() {
-    const htmlTemplate = `
-      <div class="player-position">
+    const htmlTemplate =
+      `<div class="player-position">
         <span class="position">${this.position}</span>
       </div>
 
@@ -116,6 +136,7 @@ class Player {
     return container;
   }
 
+  // 绑定原生事件
   bindEvent(query, cb) {
     if (!cb) {
       throw new Error('you should provide a callback');
@@ -131,14 +152,17 @@ class Player {
     this.bindEvent('.richi', cb);
   }
 
+  // 和 按钮
   onRon(cb) {
     this.bindEvent('.ron', cb);
   }
 
+  // 自摸按钮
   onTsumo(cb) {
     this.bindEvent('.tsumo', cb);
   }
 
+  // 更新
   update() {
     if (!this.container) {
       throw new Error('you should call player render() before update...');
@@ -153,10 +177,13 @@ class Player {
     const ronButton = this.container.querySelector('.ron');
     const tsumoButton = this.container.querySelector('.tsumo');
 
-    richiButton.classList.remove('active');
 
     if (richi) {
       richiButton.classList.add('active');
+      richiButton.disabled = true;
+    } else {
+      richiButton.classList.remove('active');
+      richiButton.disabled = false;
     }
 
     if (this.isShowResult) {
