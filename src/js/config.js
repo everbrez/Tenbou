@@ -25,11 +25,11 @@ window.configSetting = {
   },
   '南入/西入': {
     pattern: 0,
-    default: true,
+    default: true
   },
   '击飞': {
     pattern: 0,
-    default: true,
+    default: true
   },
   '天边': {
     pattern: 1,
@@ -41,11 +41,11 @@ window.configSetting = {
   '途中流局': {
     pattern: 4,
     list: ['四风连打', '四杠散了', '四家立直', '九种九牌', '三家和了'],
-    default: ['四风连打', '四杠散了', '四家立直', '九种九牌', '三家和了'],
+    default: ['四风连打', '四杠散了', '四家立直', '九种九牌', '三家和了']
   },
   '流局满贯': {
     pattern: 0,
-    default: true,
+    default: true
   },
   '不听罚符': {
     pattern: 2,
@@ -123,8 +123,7 @@ window.defaultSetting = {
   '南入/西入': true,
   '击飞': true,
   '天边': 0,
-  '途中流局':
-    ['四风连打', '四杠散了', '四家立直', '九种九牌', '三家和了'],
+  '途中流局': ['四风连打', '四杠散了', '四家立直', '九种九牌', '三家和了'],
   '流局满贯': true,
   '不听罚符': [1000, 1500, 3000],
   '立直棒点数': 1000,
