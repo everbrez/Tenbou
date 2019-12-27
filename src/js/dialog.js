@@ -332,87 +332,88 @@ class Dialog {
       // 3: 'singleSelect',
       // 4: 'multiSelect'
 
-      const result = Object.keys(setting).map(key => {
+      const htmlSetting = Object.keys(setting).map(key => {
         const config = setting[key];
         switch (config.pattern) {
           case 0:
             return `
-            <div>
-              <span class="form-label">${key}：</span>
-              <div class="form-field">
-              <label for="${key}-yes">
-                <input type="radio" name="${key}" id="${key}-yes" value="true" ${config.default ? 'checked' : ''}>
-                是
-              </label>
-              <label for="${key}-no">
-                <input type="radio" name="${key}" id="${key}-no" value="" ${config.default ? '' : 'checked'}>
-                否
-              </label>
-              </div>
-            </div>`;
+              <div>
+                <span class="form-label">${key}：</span>
+                <div class="form-field">
+                  <label for="${key}-yes">
+                    <input type="radio" name="${key}" id="${key}-yes" value="true" ${config.default ? 'checked' : ''}>
+                    是
+                  </label>
+                  <label for="${key}-no">
+                    <input type="radio" name="${key}" id="${key}-no" value="" ${config.default ? '' : 'checked'}>
+                    否
+                  </label>
+                </div>
+              </div>`;
 
           case 1:
             return `
-            <div>
-              <span class="form-label">${key}：</span>
-              <div class="form-field">
-              <input type="number" name="${key}" id="${key}" value="${config.default}">
-              </div>
-            </div>`;
+              <div>
+                <span class="form-label">${key}：</span>
+                <div class="form-field">
+                  <input type="number" name="${key}" id="${key}" value="${config.default}">
+                </div>
+              </div>`;
 
           case 2:
             return `
-            <div>
-              <span class="form-label">${key}：</span>
-              <div class="form-field">
-                ${config.default.map(num => `
-                <input type="number" name="${key}" value="${num}">
-                `).join('')}
-              </div>
-            </div>`;
+              <div>
+                <span class="form-label">${key}：</span>
+                <div class="form-field">
+                  ${config.default.map(num => `
+                  <input type="number" name="${key}" value="${num}">
+                  `).join('')}
+                </div>
+              </div>`;
 
           case 3:
             return `
-            <div>
-              <span class="form-label">${key}：</span>
-              <div class="form-field">
-                ${config.list.map((item, index) => `
-                <label for="${key}-${item}">
-                  <input type="radio" name="${key}" id="${key}-${item}" value="${index}" ${config.default === index ? 'checked' : ''}>
-                  ${item}
-                </label>
-                `).join('')}
-              </div>
-            </div>`;
+              <div>
+                <span class="form-label">${key}：</span>
+                <div class="form-field">
+                  ${config.list.map(item => `
+                  <label for="${key}-${item}">
+                    <input type="radio" name="${key}" id="${key}-${item}" value="${item}" ${config.default === item ? 'checked' : ''}>
+                    ${item}
+                  </label>
+                  `).join('')}
+                </div>
+              </div>`;
 
           case 4:
             return `
-            <div>
-              <span class="form-label">${key}：</span>
-              <div class="form-field">
-                ${config.list.map((item, index) => `
-                <label>
-                  <input type="checkbox" name="${key}" id="${key}-${item}" value="${index}" ${config.default.includes(index) ? 'checked' : ''}>
-                  ${item}
-                </label>
-                `).join('')}
-              </div>
-            </div>`;
+              <div>
+                <span class="form-label">${key}：</span>
+                <div class="form-field">
+                  ${config.list.map((item, index) => `
+                  <label>
+                    <input type="checkbox" name="${key}" id="${key}-${item}" value="${item}" ${config.default.includes(index) ? 'checked' : ''}>
+                    ${item}
+                  </label>
+                  `).join('')}
+                </div>
+              </div>`;
 
           default:
+            return '';
         }
       }).join('');
 
       const htmlTemplate =
         `<div class="dialog-container">
-        <form id="config-form">
-          ${result}
-          <div class="config-buttons-container">
-            <button type="submit">submit</button>
-            <button type="button" id="default-config-button">use default setting</button>
-          </div>
-        </form>
-      </div>`;
+          <form id="config-form">
+            ${htmlSetting}
+            <div class="config-buttons-container">
+              <button type="submit">submit</button>
+              <button type="button" id="default-config-button">use default setting</button>
+            </div>
+          </form>
+        </div>`;
 
       const container = document.createElement('div');
       container.className = 'dialog';
@@ -427,30 +428,32 @@ class Dialog {
         event.stopPropagation();
 
         const formData = new FormData(form);
+        const newSetting = {};
         Object.keys(setting).map(key => {
           const config = setting[key];
           switch (config.pattern) {
             case 0:
-              setting[key].select = !!formData.get(key);
+              newSetting[key] = !!formData.get(key);
               break;
             case 1:
-              setting[key].select = +formData.get(key);
+              newSetting[key] = +formData.get(key);
               break;
             case 2:
-              setting[key].select = formData.getAll(key).map(Number);
+              newSetting[key] = formData.getAll(key).map(Number);
               break;
             case 3:
-              setting[key].select = formData.get(key);
+              newSetting[key] = formData.get(key);
               break;
             case 4:
-              setting[key].select = formData.getAll(key);
+              newSetting[key] = formData.getAll(key);
               break;
             default:
           }
         });
 
         container.remove();
-        resolve(setting);
+        setSetting(newSetting);
+        resolve(newSetting);
       }, false);
 
       defaultConfigButton.addEventListener('click', () => {
