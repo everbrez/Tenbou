@@ -179,24 +179,19 @@ class Dialog {
         event.stopPropagation();
         const formData = new FormData(roundEndForm);
 
-        /*const result = {};
-        let count = 0;
-        for (const entry of formData) {
-          console.log(entry);
-          const [field, value] = entry;
-          result[field] = value;
-          count += 1;
-        }
-
-        console.log(result);
-
-        if (count < 3 && !isTsumo) {
+        if (!formData.has(loser)) {
           alert('请填写放铳玩家');
           return;
-        }*/
+        }
+
+        const data = {};
+        for (const entry of formData) {
+          const [field, value] = entry;
+          data[field] = value;
+        }
 
         container.remove();
-        resolve(formData);
+        resolve(data);
       }, false);
     });
   }
@@ -205,53 +200,6 @@ class Dialog {
     return new Promise(resolve => {
 
     })
-  }
-
-  showRyukyokuDialog() {
-    return new Promise(resolve => {
-      const options = getSetting()['途中流局'].concat(getSetting()['流局满贯'] ? ['流局满贯'] : []);
-      const htmlTemplate =
-        `<div class="dialog-container">
-          <form id="draw-form">
-            <span class="form-label">流局类型：</span>
-            <div class="form-field">
-              ${options.map((type, index) => `
-              <label for="draw-${index}">
-                <input type="radio" value="${type}" name="draw-type" id="draw-${index}" ${index ? '' : 'checked'}/>
-                ${type}
-              </label>
-              `).join('')}
-            </div>
-            <div class="draw-button-containers">
-              <button type="submit">submit</button>
-              <button type="button" id="cancel-button">cancel</button>
-            </div>
-          </form>
-        </div>`;
-
-      const container = document.createElement('div');
-      container.className = 'dialog';
-      container.innerHTML = htmlTemplate;
-      document.body.append(container);
-
-      const form = container.querySelector('#draw-form');
-      const cancelButton = container.querySelector('#cancel-button');
-      form.addEventListener('submit', event => {
-        event.preventDefault();
-        event.stopPropagation();
-
-        const formData = new FormData(form);
-
-        const data = formData.get('draw-type');
-        container.remove();
-        resolve(data);
-      }, false);
-
-      cancelButton.addEventListener('click', () => {
-        container.remove();
-        resolve(false);
-      }, false);
-    });
   }
 
   showMultiRonDialog(players) {
@@ -314,6 +262,53 @@ class Dialog {
 
         container.remove();
         resolve(result);
+      }, false);
+
+      cancelButton.addEventListener('click', () => {
+        container.remove();
+        resolve(false);
+      }, false);
+    });
+  }
+
+  showRyukyokuDialog() {
+    return new Promise(resolve => {
+      const options = ['荒牌流局'].concat(getSetting()['途中流局'].concat(getSetting()['流局满贯'] ? ['流局满贯'] : []));
+      const htmlTemplate =
+        `<div class="dialog-container">
+          <form id="draw-form">
+            <span class="form-label">流局类型：</span>
+            <div class="form-field">
+              ${options.map((type, index) => `
+              <label for="draw-${index}">
+                <input type="radio" value="${type}" name="draw-type" id="draw-${index}" ${index ? '' : 'checked'}/>
+                ${type}
+              </label>
+              `).join('')}
+            </div>
+            <div class="draw-button-containers">
+              <button type="submit">submit</button>
+              <button type="button" id="cancel-button">cancel</button>
+            </div>
+          </form>
+        </div>`;
+
+      const container = document.createElement('div');
+      container.className = 'dialog';
+      container.innerHTML = htmlTemplate;
+      document.body.append(container);
+
+      const form = container.querySelector('#draw-form');
+      const cancelButton = container.querySelector('#cancel-button');
+      form.addEventListener('submit', event => {
+        event.preventDefault();
+        event.stopPropagation();
+
+        const formData = new FormData(form);
+
+        const data = formData.get('draw-type');
+        container.remove();
+        resolve(data);
       }, false);
 
       cancelButton.addEventListener('click', () => {
@@ -456,6 +451,7 @@ class Dialog {
         resolve(newSetting);
       }, false);
 
+      //TODO: to rewrite
       defaultConfigButton.addEventListener('click', () => {
         container.remove();
         resolve(window.configSetting);
@@ -463,6 +459,7 @@ class Dialog {
     });
   }
 
+  //TODO: torewrite
   showResultDialog(playersSource = []) {
     const players = [...playersSource];
     players.sort((player1, player2) => player2.score - player1.score);
