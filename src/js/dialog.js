@@ -179,15 +179,16 @@ class Dialog {
         event.stopPropagation();
         const formData = new FormData(roundEndForm);
 
-        if (!formData.has(loser)) {
+        if (!formData.has('loser')) {
           alert('请填写放铳玩家');
           return;
         }
 
         const data = {};
         for (const entry of formData) {
+          console.log(entry)
           const [field, value] = entry;
-          data[field] = value;
+          data[field] = +value;
         }
 
         container.remove();
