@@ -1,14 +1,8 @@
 window.addEventListener('load', main, false);
 
 function main() {
-<<<<<<< HEAD
-  window.a = new Tenbou();
-
-  a.on('richi', (state, config, player) => {
-=======
   const game = new Tenbou();
   game.on('richi', (state, config, player) => {
->>>>>>> 52103c9a42615f8e765ca1fee8f5995bfb6e3580
     console.log(state);
     console.log(config);
     console.log(player);

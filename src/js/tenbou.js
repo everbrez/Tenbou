@@ -127,9 +127,10 @@ class Tenbou {
   }
 
   // 处理流局
+  // TODO: 检测是否有设置流局
   async handleDraw() {
     const dialog = new Dialog();
-    const drawData = await dialog.showDrawDialog();
+    const drawData = await dialog.showRyukyokuDialog();
     if (!drawData) {
       return;
     }

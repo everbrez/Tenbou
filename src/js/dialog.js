@@ -207,9 +207,9 @@ class Dialog {
     })
   }
 
-  showDrawDialog() {
+  showRyukyokuDialog() {
     return new Promise(resolve => {
-      const options = getSetting()['途中流局'] + getSetting()['流局满贯'];
+      const options = getSetting()['途中流局'].concat(getSetting()['流局满贯'] ? ['流局满贯'] : []);
       const htmlTemplate =
         `<div class="dialog-container">
           <form id="draw-form">
@@ -258,37 +258,37 @@ class Dialog {
     return new Promise(resolve => {
       const htmlTemplate =
         `<div class="dialog-container">
-        <form id="multiRon-form">
-          <div>
-            <span class="form-label">放铳玩家：</span>
-            <div class="form-field">
-              ${players.map((player, index) => `
-              <label for="loser-${index}">
-                <input type="radio" name="loser" id="loser-${index}" value="${player.id}">
-                ${player.name}
-              </label>
-              `).join('')}
+          <form id="multiRon-form">
+            <div>
+              <span class="form-label">放铳玩家：</span>
+              <div class="form-field">
+                ${players.map((player, index) => `
+                <label for="loser-${index}">
+                  <input type="radio" name="loser" id="loser-${index}" value="${player.id}">
+                  ${player.name}
+                </label>
+                `).join('')}
+              </div>
             </div>
-          </div>
 
-          <div>
-            <span class="form-label">和牌玩家：</span>
-            <div class="form-field">
-              ${players.map((player, index) => `
-              <label for="ron-${index}">
-                <input type="checkbox" name="ron" id="ron-${index}" value="${player.id}">
-                ${player.name}
-              </label>
-              `).join('')}
+            <div>
+              <span class="form-label">和牌玩家：</span>
+              <div class="form-field">
+                ${players.map((player, index) => `
+                <label for="ron-${index}">
+                  <input type="checkbox" name="ron" id="ron-${index}" value="${player.id}">
+                  ${player.name}
+                </label>
+                `).join('')}
+              </div>
             </div>
-          </div>
 
-          <div class="multi-buttons-container">
-            <button type="submit">submit</button>
-            <button type="button" id="cancel-button">cancel</button>
-          </div>
-        </form>
-      </div>`;
+            <div class="multi-buttons-container">
+              <button type="submit">submit</button>
+              <button type="button" id="cancel-button">cancel</button>
+            </div>
+          </form>
+        </div>`;
 
       const container = document.createElement('div');
       container.className = 'dialog';
@@ -311,6 +311,7 @@ class Dialog {
         };
 
         console.log(result);
+
         container.remove();
         resolve(result);
       }, false);
@@ -449,7 +450,6 @@ class Dialog {
         });
 
         container.remove();
-        window.setting = setting;
         resolve(setting);
       }, false);
 
