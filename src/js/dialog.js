@@ -111,59 +111,55 @@ class Dialog {
     });
   }
 
-  showRoundEndDialog(isTsumo = false) {
+  // used to be showRoundEndDialog
+  showRonDialog() {
     return new Promise(resolve => {
       const loser = ['上家', '对家', '下家'];
-      const fans = ['1翻', '2翻', '3翻', '4翻', '满贯（4-5翻）', '跳满（6-7翻）',
-        '倍满（8-10翻）',
-        '三倍满（11-12翻）', '役满', '2倍役满', '3倍役满', '4倍役满', '5倍役满', '6倍役满'
-      ];
-      const fus = ['20符', '25符', '30符', '40符', '50符', '60符', '70符', '80符',
-        '90符', '100符', '110符'
-      ];
+      const fans = ['1翻', '2翻', '3翻', '4翻', '满贯（2/3/4-5翻）', '跳满（6-7翻）', '倍满（8-10翻）', '三倍满（11-12翻）', '役满', '两倍役满', '三倍役满', '四倍役满', '五倍役满', '六倍役满'];
+      const fus = [20, 25, 30, 40, 50, 60, 70, 80, 90, 100, 110];
 
       const htmlTemplate =
-      `<div class="dialog-container">
-        <form id="round-end-form">
-          <div>
-            <span class="form-label">放铳玩家：</span>
-            <div class="form-field">
-              ${isTsumo ? '' : loser.map((loser, index) => `
-              <label for="loser-${index}">
-                <input type="radio" id="loser-${index}" name="loser" value="${loser}">
-              ${loser}</label>
+        `<div class="dialog-container">
+          <form id="round-end-form">
+            <div>
+              <span class="form-label">放铳玩家：</span>
+              <div class="form-field">
+                ${loser.map((loser, index) => `
+                <label for="loser-${index}">
+                  <input type="radio" id="loser-${index}" name="loser" value="${index}">
+                ${loser}</label>
+                `).join('')}
+              </div>
+            </div>
+
+            <div>
+              <span class="form-label">选择翻：</span>
+              <div class="form-field">
+              ${fans.map((fan, index) => `
+                <label for="fan-${index}">
+                  <input type="radio" id="fan-${index}" name="fan" value="${index}" ${index ? '' : 'checked'}>
+                ${fan}</label>
               `).join('')}
+              </div>
             </div>
-          </div>
 
-          <div>
-            <span class="form-label">选择翻：</span>
-            <div class="form-field">
-            ${fans.map((fan, index) => `
-              <label for="fan-${index}">
-                <input type="radio" id="fan-${index}" name="fan" value="${fan}" ${index ? '' : 'checked'}>
-              ${fan}</label>
-            `).join('')}
+            <div>
+              <span class="form-label">选择符：</span>
+              <div class="form-field">
+              ${fus.map((fu, index) => `
+                <label for="fu-${index}">
+                  <input type="radio" id="fu-${index}" name="fu" value="${fu}" ${index ? '' : 'checked'}>
+                ${fu}符</label>
+              `).join('')}
+              </div>
             </div>
-          </div>
 
-          <div>
-            <span class="form-label">选择符：</span>
-            <div class="form-field">
-            ${fus.map((fu, index) => `
-              <label for="fu-${index}">
-                <input type="radio" id="fu-${index}" name="fu" value="${fu}" ${index ? '' : 'checked'}>
-              ${fu}</label>
-            `).join('')}
+            <div class="roundend-button-container">
+              <button type="submit">确定</button>
+              <button type="button" id="cancel-button">cancel</button>
             </div>
-          </div>
-
-          <div class="roundend-button-container">
-            <button type="submit">确定</button>
-            <button type="button" id="cancel-button">cancel</button>
-          </div>
-        </form>
-      </div>`;
+          </form>
+        </div>`;
 
       const container = document.createElement('div');
       container.className = 'dialog';
@@ -182,26 +178,38 @@ class Dialog {
         event.preventDefault();
         event.stopPropagation();
         const formData = new FormData(roundEndForm);
-        const result = {};
+
+        /*const result = {};
         let count = 0;
         for (const entry of formData) {
+          console.log(entry);
           const [field, value] = entry;
           result[field] = value;
           count += 1;
         }
+
+        console.log(result);
+
         if (count < 3 && !isTsumo) {
           alert('请填写放铳玩家');
           return;
-        }
+        }*/
+
         container.remove();
-        resolve(result);
+        resolve(formData);
       }, false);
     });
   }
 
+  showTsumoDialog() {
+    return new Promise(resolve => {
+
+    })
+  }
+
   showDrawDialog() {
     return new Promise(resolve => {
-      const options = ['普通流局', '途中流局（连庄）', '途中流局（轮庄）', '特殊流局'];
+      const options = getSetting()['途中流局'] + getSetting()['流局满贯'];
       const htmlTemplate =
         `<div class="dialog-container">
           <form id="draw-form">
@@ -249,7 +257,7 @@ class Dialog {
   showMultiRonDialog(players) {
     return new Promise(resolve => {
       const htmlTemplate =
-      `<div class="dialog-container">
+        `<div class="dialog-container">
         <form id="multiRon-form">
           <div>
             <span class="form-label">放铳玩家：</span>
@@ -395,7 +403,7 @@ class Dialog {
       }).join('');
 
       const htmlTemplate =
-      `<div class="dialog-container">
+        `<div class="dialog-container">
         <form id="config-form">
           ${result}
           <div class="config-buttons-container">
@@ -441,7 +449,8 @@ class Dialog {
         });
 
         container.remove();
-        resolve(setting)
+        window.setting = setting;
+        resolve(setting);
       }, false);
 
       defaultConfigButton.addEventListener('click', () => {

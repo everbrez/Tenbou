@@ -22,15 +22,15 @@ class Tenbou {
       'roundend': [],
       'beforeroundend': [],
       'afterroundend': [],
-      'ron': [],
       'richi': [],
       'beforerichi': [],
+      'ron': [],
       'tsumo': []
     };
 
     this.config = {};
 
-    this.onEndHandler = []
+    this.onEndHandler = [];
   }
 
   async init() {
@@ -148,14 +148,16 @@ class Tenbou {
     this.handleRoundEnd('multiRon', this.state.players[0], data);
   }
 
-  // 一句正常结束： 某个player 和或者自摸
+  // 一局正常结束： 某个player 和或者自摸
   async roundEnd(type, player) {
     const dialog = new Dialog();
-    const data = await dialog.showRoundEndDialog(type === 'tsumo');
+    const formData = type === 'tsumo'
+      ? await dialog.showTsumoDialog()
+      : await dialog.showRonDialog();
     if (!data) {
       return;
     }
-    this.handleRoundEnd(type, player, data);
+    this.handleRoundEnd(type, player, formData);
   }
 
   // 一局结束的统一入口，通过是否抛出错误判断是否主动结束游戏（如满足某些条件）

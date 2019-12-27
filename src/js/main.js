@@ -2,6 +2,7 @@ window.addEventListener('load', main, false);
 
 function main() {
   window.a = new Tenbou();
+
   a.on('richi', (state, config, player) => {
     console.log(state);
     console.log(config);
