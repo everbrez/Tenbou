@@ -30,9 +30,9 @@ function getRandomName() {
 }
 
 // 随机获取4个不同的名字
-window.getRandomNames = function () {
+window.getRandomNames = function (n = 4) {
   let set = new Set();
-  while (set.size < 4) {
+  while (set.size < n) {
     const name = getRandomName();
     set.add(name);
   }
@@ -51,30 +51,24 @@ class Player {
       position,
       name = getRandomName(),
       avatar = getRandomAvatar(),
-      id,
-      // 默认，但是一般会在init事件中根据用户的设置来进行调整
-      score = position === '东' ? 16000 : 12000,
-      // 判断是否立直
-      richi = false
+      id
     } = options;
 
     this.position = position; // 东南西北
     this.name = name;
     this.avatar = avatar; // 64978502_p5
     this.id = id; // id: number
-    this.score = score;
-    // 存放每局结束的时候显示结算界面，player应该+还是-分数
-    this.result = '+ 0';
+    this.score = getSetting()['起始点数']['东南西北'.indexOf(position)];
+    this.result = '';
     this.isShowResult = false;
 
-    this.richi = richi; // default false
+    this.richi = false;
     this.container = null;
     this.identity = 'player' + id;
   }
 
   reset() {
-    this.score = 12000;
-    this.result = '+ 0';
+    this.result = '';
     this.isShowResult = false;
     this.richi = false;
     this.record = undefined;
@@ -90,14 +84,16 @@ class Player {
   }
 
   showResult() {
-    this.isShowResult = true;
     const result = this.score - this.record;
-    if (result >= 0) {
-      this.result = '+ ' + result;
-      return;
-    }
 
-    this.result = '- ' + -result;
+    if (result === 0)
+      this.result = '';
+    else if (result > 0)
+      this.result = '+ ' + result;
+    else
+      this.result = '- ' + -result;
+
+    this.isShowResult = true;
   }
 
   hideResult() {
@@ -112,7 +108,7 @@ class Player {
       </div>
 
       <div class="player-main">
-        <button class="richi ${this.richi ? 'active' : ''}">立直</button>
+        <button class="richi ${this.richi ? 'active' : ''}">リーチ</button>
         <span class="player-score">
           ${this.score}
         </span>
@@ -160,6 +156,11 @@ class Player {
   // 自摸按钮
   onTsumo(cb) {
     this.bindEvent('.tsumo', cb);
+  }
+
+  // 查看点差
+  onScoreDiffer(cb) {
+    this.bindEvent('.player-score', cb);
   }
 
   // 更新
