@@ -386,9 +386,9 @@ class Dialog {
               <div>
                 <span class="form-label">${key}：</span>
                 <div class="form-field">
-                  ${config.list.map((item, index) => `
+                  ${config.list.map(item => `
                   <label>
-                    <input type="checkbox" name="${key}" id="${key}-${item}" value="${item}" ${config.default.includes(index) ? 'checked' : ''}>
+                    <input type="checkbox" name="${key}" id="${key}-${item}" value="${item}" ${config.default.includes(item) ? 'checked' : ''}>
                     ${item}
                   </label>
                   `).join('')}
