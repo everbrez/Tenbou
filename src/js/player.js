@@ -123,13 +123,12 @@ class Player {
         <button class="tsumo">ツモ</button>
       </div>`;
 
-    const container = document.createElement('div');
-    container.innerHTML = htmlTemplate;
-    container.className = `player ${this.identity}`;
-    container.id = this.identity;
+    this.container = document.createElement('div');
+    this.container.innerHTML = htmlTemplate;
+    this.container.className = `player ${this.identity}`;
+    this.container.id = this.identity;
 
-    this.container = container;
-    return container;
+    return this.container;
   }
 
   // 绑定原生事件

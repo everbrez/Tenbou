@@ -7,7 +7,7 @@ const defaultRoundNames = [
 class DashBoard {
   constructor(options = {}) {
     const {
-      richi = 0, honba = 0, round = 1, roundNames = defaultRoundNames
+      richi = 0, honba = 0, round = 0, roundNames = defaultRoundNames
     } = options;
     this.richi = richi;
     this.honba = honba;
@@ -17,7 +17,7 @@ class DashBoard {
     this.isShowResult = false;
 
     // 根据round来获取当前局的名称
-    this.roundName = this.roundNames[round - 1];
+    this.roundName = this.roundNames[round];
 
     this.container = null;
     this.isShowNextRoundButton = false;
@@ -26,8 +26,8 @@ class DashBoard {
   reset() {
     this.richi = 0;
     this.honba = 0;
-    this.round = 1;
-    this.roundName = this.roundNames[this.round - 1]
+    this.round = 0;
+    this.roundName = this.roundNames[this.round];
     this.isShowNextRoundButton = false;
     this.isShowResult = false;
   }
@@ -140,17 +140,17 @@ class DashBoard {
 
   nextRound() {
     this.round += 1;
-    this.roundName = this.roundNames[this.round - 1];
+    this.roundName = this.roundNames[this.round];
   }
 
   // 流局 按钮
-  onDraw(cb) {
+  onRyukyoku(cb) {
     if (!cb) {
       throw new Error('you should provide an callback');
     }
 
-    const drawButton = this.container.querySelector('.draw-button');
-    drawButton.addEventListener('click', cb, false);
+    const ryukyokuButton = this.container.querySelector('.draw-button');
+    ryukyokuButton.addEventListener('click', cb, false);
   }
 
   // 多人和 按钮

@@ -36,10 +36,12 @@ class Tenbou {
   async init() {
     // 此处get用户的设置，初始化player
     let dialog = new Dialog();
-    const config = await dialog.showConfigDialog();
-    this.config = config || window.configSetting;
+    await dialog.showConfigDialog();
+    this.config = getSetting();
     // 读取用户设置的 palyer 信息，包括名字，startPos等
     const players = await dialog.showUserConfigDialog();
+
+    console.log(players);
 
     this.state.players = players;
     // 初始化庄家
@@ -49,7 +51,7 @@ class Tenbou {
       richi: 0,
       honba: 0,
       // round 与 roundName 对应，表示现在是第几局
-      round: 1,
+      round: 0,
     });
 
     this.emitEvent('init');
@@ -104,7 +106,7 @@ class Tenbou {
     });
     // bind next round button
     this.state.dashboard.onNextRound(this.nextRound.bind(this));
-    this.state.dashboard.onDraw(this.handleDraw.bind(this));
+    this.state.dashboard.onRyukyoku(this.handleRyukyoku.bind(this));
     this.state.dashboard.onMultiRon(this.handleMultiRon.bind(this));
   }
 
@@ -128,7 +130,7 @@ class Tenbou {
 
   // 处理流局
   // TODO: 检测是否有设置流局
-  async handleDraw() {
+  async handleRyukyoku() {
     const dialog = new Dialog();
     const drawData = await dialog.showRyukyokuDialog();
     if (!drawData) {
