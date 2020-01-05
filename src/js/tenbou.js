@@ -4,10 +4,7 @@ class Tenbou {
       // 玩家，一般为4个player对象
       players: [],
       // 页面中间的状态显示器
-      dashboard: {},
-      // 开始位置，一般： startPos = 1: player1是东，其他按照player2西，3南，4北的顺序。
-      startPos: Math.floor(Math.random() * 4 + 1),
-      master: {}
+      dashboard: {}
     }
 
     // afterroundend事件不会立即更新界面，会在下一轮开始才进行更新。
@@ -40,18 +37,15 @@ class Tenbou {
     await dialog.showConfigDialog();
     this.config = getSetting();
 
-    // 读取用户设置的 palyer 信息，包括名字，startPos等
+    // 读取用户设置的 palyer 信息，包括 id 名字等
     const playersConfig = await dialog.showUserConfigDialog();
     initPlayers(playersConfig);
 
-    this.state.players = players;
-    // 初始化庄家
-    this.state.master = players[0];
+    this.state.players = getPlayers();
 
     this.state.dashboard = new DashBoard({
       richi: 0,
       honba: 0,
-      // round 与 roundName 对应，表示现在是第几局
       round: 0,
     });
 
