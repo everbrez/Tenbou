@@ -36,13 +36,13 @@ class Tenbou {
   async init() {
     // 此处get用户的设置，初始化player
     let dialog = new Dialog();
+
     await dialog.showConfigDialog();
     this.config = getSetting();
+
     // 读取用户设置的 palyer 信息，包括名字，startPos等
     const playersConfig = await dialog.showUserConfigDialog();
-    const players = playersConfig.map(item => new Player(item));
-
-    console.log(players);
+    initPlayers(playersConfig);
 
     this.state.players = players;
     // 初始化庄家

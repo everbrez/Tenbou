@@ -140,6 +140,30 @@ window.setting = {
   '多倍役满/役满复合': true
 }
 
+window.defaultSetting = {
+  '模式': '四人南',
+  '起始点数': [25000, 25000, 25000, 25000],
+  '1位必要点数': 30000,
+  '南入/西入': true,
+  '击飞': true,
+  '天边': 0,
+  '途中流局': ['四风连打', '四杠散了', '四家立直', '九种九牌', '三家和了'],
+  '流局满贯': true,
+  '不听罚符': [1000, 1500, 3000],
+  '立直棒点数': 1000,
+  '场棒点数': 300,
+  '返点': 25000,
+  '顺位马点': [+15, +5, -5, -15],
+  '切上满贯': false,
+  '头跳': false,
+  '和牌连庄': true,
+  '和了终局': true,
+  '听牌连庄': true,
+  '听牌终局': true,
+  '累计役满': true,
+  '多倍役满/役满复合': true
+}
+
 function getSetting() {
   return window.setting;
 }
@@ -149,5 +173,13 @@ function setSetting(newSetting) {
 }
 
 function getDefaultSetting() {
-  return window.configSetting; //window.defaultSetting
+  return window.defaultSetting;
+}
+
+function getPlayers() {
+  return window.players;
+}
+
+function initPlayers(playersConfig) {
+  window.players = playersConfig.map(item => new Player(item));;
 }
