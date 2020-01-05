@@ -39,7 +39,8 @@ class Tenbou {
     await dialog.showConfigDialog();
     this.config = getSetting();
     // 读取用户设置的 palyer 信息，包括名字，startPos等
-    const players = await dialog.showUserConfigDialog();
+    const playersConfig = await dialog.showUserConfigDialog();
+    const players = playersConfig.map(item => new Player(item));
 
     console.log(players);
 

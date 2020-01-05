@@ -64,7 +64,7 @@ class Player {
 
     this.richi = false;
     this.container = null;
-    this.identity = 'player' + id;
+    this.identity = 'player' + this.id;
   }
 
   reset() {

@@ -72,12 +72,11 @@ class Dialog {
 
         container.remove();
         resolve(players.map((name, index) => {
-          return new Player({
-            id: index + 1,
+          return {
+            id: index,
             name,
-            position: '东南西北'[(index - startPos +
-              1 + 4) % 4],
-          });
+            position: '东南西北'[(index - startPos + 5) % 4],
+          };
         }));
         event.preventDefault();
         event.stopPropagation();
