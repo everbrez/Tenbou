@@ -55,6 +55,7 @@ class Player {
     } = options;
 
     this.position = position; // 东南西北
+    this.oya = this.position === '东' ? true : false;
     this.name = name;
     this.avatar = avatar; // 64978502_p5
     this.id = id; // id: number

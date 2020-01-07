@@ -27,38 +27,52 @@ function main() {
       data: { fan, fu },
       loser = player.findByRelation(data['loser'])
     } = event;
+    let score = 0;
 
     // fans = ['1翻', '2翻', '3翻', '4翻', '满贯（3/4-5翻）', '跳满（6-7翻）', '倍满（8-10翻）', '三倍满（11-12翻）', '役满/累计役满', '两倍役满', '三倍役满', '四倍役满', '五倍役满', '六倍役满'];
     switch (fan) {
-      case 0:
-        break;
-      case 1:
-        break;
-      case 2:
-        break;
-      case 3:
+      case 0: case 1: case 2: case 3:
+        score = Math.round(fu * 2 ** (fan + 1 + 2));
+        if (score >= 2000)
+          score = 2000;
         break;
       case 4:
+        score = 2000;
         break;
       case 5:
+        score = 2000 * 1.5;
         break;
       case 6:
+        score = 2000 * 2;
         break;
       case 7:
+        score = 2000 * 3;
         break;
       case 8:
+        score = 2000 * 4;
         break;
       case 9:
+        score = 2000 * 4 * 2;
         break;
       case 10:
+        score = 2000 * 4 * 3;
         break;
       case 11:
+        score = 2000 * 4 * 4;
         break;
       case 12:
+        score = 2000 * 4 * 5;
         break;
       case 13:
+        score = 2000 * 4 * 6;
         break;
+      default:
     }
+
+    if (player.oya)
+      score *= 6;
+    else
+      score *= 4;
 
     return state;
   });
