@@ -91,11 +91,11 @@ class Tenbou {
       });
 
       el.onRon(player => {
-        this.roundEnd('ron', player);
+        this.roundEnd(player);
       });
 
       el.onTsumo(player => {
-        this.roundEnd('tsumo', player);
+        this.roundEnd(player);
       });
     });
     // bind next round button
@@ -144,16 +144,26 @@ class Tenbou {
     this.handleRoundEnd('multiRon', this.state.players[0], data);
   }
 
-  // 一局正常结束： 某个player 和或者自摸
-  async roundEnd(type, player) {
+  // 处理和
+  async handleRon(player) {
     const dialog = new Dialog();
-    const data = type === 'tsumo'
-      ? await dialog.showTsumoDialog()
-      : await dialog.showRonDialog();
+    const data = await dialog.showRonDialog();
     if (!data) {
       return;
     }
-    this.handleRoundEnd(type, player, data);
+
+    this.handleRoundEnd('ron', player, data);
+  }
+
+  // 处理自摸
+  async handleTsumo(player) {
+    const dialog = new Dialog();
+    const data = await dialog.showTsumoDialog();
+    if (!data) {
+      return;
+    }
+
+    this.handleRoundEnd('tsumo', player, data);
   }
 
   // 一局结束的统一入口，通过是否抛出错误判断是否主动结束游戏（如满足某些条件）
