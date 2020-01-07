@@ -5,19 +5,20 @@ function main() {
 
   // 立直
   game.on('richi', (state, event) => {
-    /*if (getSetting()["击飞"]) {
-      if (player.score >= 1000) {
-        state.dashboard.richi += 1;
-        player.score -= 1000;
-        player.richi = true;
-      }
+    const {
+      target: player,
+      richiPoint = getSetting()['立直棒点数']
+    } = event;
+
+    if (getSetting()['击飞'] && player.score < richiPoint) {
+      alert('点数不足以立直');
     } else {
       state.dashboard.richi += 1;
-      player.score -= 1000;
+      player.score -= richiPoint;
       player.richi = true;
     }
 
-    return state;*/
+    return state;
   });
 
   game.on('beforeRoundEnd', (state, event) => {
