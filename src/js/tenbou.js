@@ -239,7 +239,7 @@ class Tenbou {
       return;
     }
 
-    this.handleEnd();
+    this.handleGameEnd();
   }
 
   continue() {
@@ -250,7 +250,7 @@ class Tenbou {
     this.setState();
   }
 
-  handleEnd() {
+  handleGameEnd() {
     this.state.players.forEach(player => player.unmount())
     this.state.dashboard.unmount();
     this.onEndHandler.forEach(cb => cb());
