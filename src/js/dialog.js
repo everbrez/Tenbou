@@ -7,7 +7,7 @@ class Dialog {
   }
 
   showUserConfigDialog() {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       const htmlTemplate =
         `<div class="dialog-container">
           <form id="player-name-form">
@@ -56,19 +56,16 @@ class Dialog {
       const player2Dom = container.querySelector('#player2');
       const player3Dom = container.querySelector('#player3');
       const player4Dom = container.querySelector('#player4');
-      const randomPosButton = container.querySelector(
-        '#random-direction-button');
-      const randomNameButton = container.querySelector(
-        '#random-name-button');
+      const randomPosButton = container.querySelector('#random-direction-button');
+      const randomNameButton = container.querySelector('#random-name-button');
       const form = container.querySelector('#player-name-form');
       const positions = [...container.querySelectorAll('.position')];
 
       let startPos = 1;
 
       form.addEventListener('submit', event => {
-        const players = [player1Dom,
-          player2Dom, player3Dom, player4Dom
-        ].map(dom => dom.value || dom.placeholder);
+        const players = [player1Dom, player2Dom, player3Dom, player4Dom]
+          .map(dom => dom.value || dom.placeholder);
 
         container.remove();
         resolve(players.map((name, index) => {
@@ -202,8 +199,9 @@ class Dialog {
     })
   }
 
-  showMultiRonDialog(players) {
+  showMultiRonDialog() {
     return new Promise(resolve => {
+      const players = getPlayers();
       const htmlTemplate =
         `<div class="dialog-container">
           <form id="multiRon-form">
@@ -257,8 +255,6 @@ class Dialog {
           loser: formData.get('loser'),
           ron: formData.getAll('ron')
         };
-
-        console.log(result);
 
         container.remove();
         resolve(result);
@@ -460,8 +456,8 @@ class Dialog {
   }
 
   //TODO: torewrite
-  showResultDialog(playersSource = []) {
-    const players = [...playersSource];
+  showResultDialog() {
+    const players = getPlayers();
     players.sort((player1, player2) => player2.score - player1.score);
 
     return new Promise(resolve => {

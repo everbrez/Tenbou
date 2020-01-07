@@ -155,7 +155,7 @@ class Tenbou {
       return;
     }
     this.emitEvent('ryukyoku', undefined, data);
-    this.handleRoundEnd('ryukyoku', this.state.players, data);
+    this.handleRoundEnd('ryukyoku', undefined, data);
   }
 
   // 处理多人和
@@ -166,7 +166,7 @@ class Tenbou {
       return;
     }
     this.emitEvent('multiRon', undefined, data);
-    this.handleRoundEnd('multiRon', this.state.players, data);
+    this.handleRoundEnd('multiRon', undefined, data);
   }
 
   // 一局结束的统一入口

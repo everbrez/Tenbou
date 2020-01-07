@@ -181,5 +181,5 @@ function getPlayers() {
 }
 
 function initPlayers(playersConfig) {
-  window.players = playersConfig.map(item => new Player(item));;
+  window.players = playersConfig.map(item => new Player(item));
 }
