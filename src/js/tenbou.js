@@ -56,7 +56,7 @@ class Tenbou {
     this.onEndHandler.push(cb);
   }
 
-  // mount 是将player和dashboard插入页面的函数，生成dom并插入的过程
+  // mount 是将 player 和 dashboard 插入页面的函数，生成 dom 并插入的过程
   mount() {
     const container = document.querySelector('.container');
     const playerInstance = this.state.players.map(player => player.render());
@@ -65,11 +65,10 @@ class Tenbou {
     container.append(...playerInstance, dashboardInstance);
   }
 
-  // 事件触发统一分发器，identity一般为player对象，其他参数会根据不同情况传入回调函数
+  // 事件触发统一分发器，identity 一般为 Player 对象，其他参数会根据不同情况传入回调函数
   emitEvent(eventName, identify, ...args) {
     const oldState = this.state;
-    const newState = this.eventHandler[eventName].reduce((state,
-      handler) => {
+    const newState = this.eventHandler[eventName].reduce((state, handler) => {
       return handler(state, this.config, identify, this, ...args)
     }, this.state);
 
@@ -81,7 +80,7 @@ class Tenbou {
     this.eventHandler[eventName].push(eventHandler);
   }
 
-  // tenbou 本身对 dom 事件的绑定，一般在mount阶段触发
+  // tenbou 本身对 dom 事件的绑定，一般在 mount 阶段触发
   bindEvent() {
     this.state.players.forEach(el => {
       el.onRichi((player) => {
@@ -124,7 +123,6 @@ class Tenbou {
   }
 
   // 处理流局
-  // TODO: 检测是否有设置流局
   async handleRyukyoku() {
     const dialog = new Dialog();
     const drawData = await dialog.showRyukyokuDialog();
@@ -211,8 +209,8 @@ class Tenbou {
     // 骰子
     this.hideResult();
     this.hideNextRoundButton();
-    // reset player richi status
-    this.state.players.forEach(player => player.richi = false)
+    // 重设 player 状态
+    this.state.players.forEach(player => player.richi = false);
     this.state.dashboard.nextRound();
     this.setState();
   }
@@ -225,10 +223,10 @@ class Tenbou {
   // 用来显示结算界面用
   async handleGameOver(message) {
     const dialog = new Dialog();
-    const isContinue = await dialog.showResultDialog(this.state.players)
+    const isContinue = await dialog.showResultDialog(this.state.players);
     if (isContinue) {
       this.continue();
-      return
+      return;
     }
 
     this.handleEnd();
@@ -243,8 +241,8 @@ class Tenbou {
   }
 
   handleEnd() {
-    this.state.players.forEach(player => player.unmout())
-    this.state.dashboard.unmout();
+    this.state.players.forEach(player => player.unmount())
+    this.state.dashboard.unmount();
     this.onEndHandler.forEach(cb => cb());
   }
 

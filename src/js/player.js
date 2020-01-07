@@ -74,7 +74,7 @@ class Player {
     this.record = undefined;
   }
 
-  unmout() {
+  unmount() {
     this.container.remove();
   }
 

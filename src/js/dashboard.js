@@ -32,7 +32,7 @@ class DashBoard {
     this.isShowResult = false;
   }
 
-  unmout() {
+  unmount() {
     this.container.remove();
   }
 
