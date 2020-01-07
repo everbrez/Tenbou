@@ -66,11 +66,11 @@ class Tenbou {
     container.append(...playerInstance, dashboardInstance);
   }
 
-  // 事件触发统一分发器，identity 一般为 Player 对象，其他参数会根据不同情况传入回调函数
-  emitEvent(eventName, identify, ...args) {
+  // 事件触发统一分发器，target 一般为 Player 对象，其他参数会根据不同情况传入回调函数
+  emitEvent(eventName, target, data) {
     const oldState = this.state;
     const newState = this.eventHandler[eventName]
-      .reduce((state, handler) => handler(state, identify, this, ...args), this.state);
+      .reduce((state, handler) => handler(state, { target: target, data: data, event: eventName }), this.state);
 
     this.state = Object.assign({}, oldState, newState || {});
   }
@@ -84,9 +84,7 @@ class Tenbou {
   bindEvent() {
     this.state.players.forEach(el => {
       el.onRichi((player) => {
-        console.log('richi');
-        this.emitEvent('richi', player);
-        this.setState();
+        this.handleRichi(player);
       });
 
       el.onRon(player => {
@@ -121,26 +119,10 @@ class Tenbou {
     this.state.dashboard.update();
   }
 
-  // 处理流局
-  async handleRyukyoku() {
-    const dialog = new Dialog();
-    const drawData = await dialog.showRyukyokuDialog();
-    if (!drawData) {
-      return;
-    }
-
-    this.handleRoundEnd('ryukyoku', this.state.players[0], drawData);
-  }
-
-  // 处理多人和
-  async handleMultiRon() {
-    const dialog = new Dialog();
-    const data = await dialog.showMultiRonDialog(this.state.players);
-    if (!data) {
-      return;
-    }
-
-    this.handleRoundEnd('multiRon', this.state.players[0], data);
+  // 处理立直
+  handleRichi(player) {
+    this.emitEvent('richi', player);
+    this.setState();
   }
 
   // 处理和
@@ -150,7 +132,7 @@ class Tenbou {
     if (!data) {
       return;
     }
-
+    this.emitEvent('ron', player, data);
     this.handleRoundEnd('ron', player, data);
   }
 
@@ -161,28 +143,46 @@ class Tenbou {
     if (!data) {
       return;
     }
-
+    this.emitEvent('tsumo', player, data);
     this.handleRoundEnd('tsumo', player, data);
   }
 
-  // 一局结束的统一入口，通过是否抛出错误判断是否主动结束游戏（如满足某些条件）
-  handleRoundEnd(type, player, ...args) {
-    this.recordResult();
-    try {
-      this.emitEvent('beforeRoundEnd', player, type, ...args);
-      this.emitEvent('roundend', player, type, ...args);
-      this.showResult();
-      this.showNextRoundButton();
-    } catch (error) {
-      this.handleGameOver('主动结束游戏: ' + error.message);
+  // 处理流局
+  async handleRyukyoku() {
+    const dialog = new Dialog();
+    const data = await dialog.showRyukyokuDialog();
+    if (!data) {
+      return;
     }
+    this.emitEvent('ryukyoku', undefined, data);
+    this.handleRoundEnd('ryukyoku', this.state.players, data);
+  }
+
+  // 处理多人和
+  async handleMultiRon() {
+    const dialog = new Dialog();
+    const data = await dialog.showMultiRonDialog(this.state.players);
+    if (!data) {
+      return;
+    }
+    this.emitEvent('multiRon', undefined, data);
+    this.handleRoundEnd('multiRon', this.state.players, data);
+  }
+
+  // 一局结束的统一入口
+  handleRoundEnd(endType, target, data) {
+    Object.assign(data, { endType: endType });
+    this.recordResult();
+
+    this.emitEvent('beforeRoundEnd', target, data);
+    this.emitEvent('roundEnd', target, data);
+
+    this.showResult();
+    this.showNextRoundButton();
+
     this.setState();
 
-    try {
-      this.emitEvent('afterRoundEnd');
-    } catch (error) {
-      this.handleGameOver('被动结束游戏: ' + error.message);
-    }
+    this.emitEvent('afterRoundEnd');
   }
 
   showNextRoundButton() {
@@ -234,23 +234,24 @@ class Tenbou {
     const dialog = new Dialog();
     const isContinue = await dialog.showResultDialog(this.state.players);
     if (isContinue) {
-      this.continue();
+      this.reStart();
       return;
     }
 
     this.handleGameEnd();
   }
 
-  continue() {
-    // 重置
-    this.state.players.forEach(player => player.reset())
+  // 重置
+  reStart() {
+    this.state.players.forEach(player => player.reset());
     this.state.dashboard.reset();
     this.emitEvent('init');
     this.setState();
   }
 
+  // 释放资源
   handleGameEnd() {
-    this.state.players.forEach(player => player.unmount())
+    this.state.players.forEach(player => player.unmount());
     this.state.dashboard.unmount();
     this.onEndHandler.forEach(cb => cb());
   }
