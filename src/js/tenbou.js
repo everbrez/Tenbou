@@ -7,22 +7,23 @@ class Tenbou {
       dashboard: {}
     }
 
-    // afterroundend事件不会立即更新界面，会在下一轮开始才进行更新。
+    // afterRoundEnd事件不会立即更新界面，会在下一轮开始才进行更新。
     // 该事件是用来做下一轮的准备工作
 
-    // roundend事件发生在beforerounded事件之后，一般要结束游戏的检查放在roundend事件，计算分数的操作放在beforeroundend事件。
+    // roundend事件发生在beforerounded事件之后，一般要结束游戏的检查放在roundend事件，计算分数的操作放在beforeRoundEnd事件。
     // 尽量不要在roundend里进行数值操作，即改变state的一些内容，防止其他检查操作发生错误。
 
     // init 事件是将 player 和 dashboard 对象实例化之后，还没有进行render()，即还没有插入页面的时候触发事件。主要用来处理一些默认参数，如根据配置来设置初始化点数、游戏模式等等。
     this.eventHandler = {
       'init': [],
       'roundend': [],
-      'beforeroundend': [],
-      'afterroundend': [],
+      'beforeRoundEnd': [],
+      'afterRoundEnd': [],
       'richi': [],
-      'beforerichi': [],
       'ron': [],
-      'tsumo': []
+      'tsumo': [],
+      'multiRon': [],
+      'ryukyoku': [],
     };
 
     this.config = {};
@@ -68,9 +69,8 @@ class Tenbou {
   // 事件触发统一分发器，identity 一般为 Player 对象，其他参数会根据不同情况传入回调函数
   emitEvent(eventName, identify, ...args) {
     const oldState = this.state;
-    const newState = this.eventHandler[eventName].reduce((state, handler) => {
-      return handler(state, this.config, identify, this, ...args)
-    }, this.state);
+    const newState = this.eventHandler[eventName]
+      .reduce((state, handler) => handler(state, identify, this, ...args), this.state);
 
     this.state = Object.assign({}, oldState, newState || {});
   }
@@ -85,17 +85,16 @@ class Tenbou {
     this.state.players.forEach(el => {
       el.onRichi((player) => {
         console.log('richi');
-        this.emitEvent('beforerichi', player);
         this.emitEvent('richi', player);
         this.setState();
       });
 
       el.onRon(player => {
-        this.roundEnd(player);
+        this.handleRon(player);
       });
 
       el.onTsumo(player => {
-        this.roundEnd(player);
+        this.handleTsumo(player);
       });
     });
     // bind next round button
@@ -105,7 +104,7 @@ class Tenbou {
   }
 
   // 这个可以触发界面更新，如果输入的是函数，则可以用在异步更新中
-  // 如果没有参数，则根据当前state的信息更新界面
+  // 如果没有参数，则根据当前 state 的信息更新界面
   setState(cb = state => state) {
     if (cb) {
       const oldState = this.state;
@@ -116,7 +115,7 @@ class Tenbou {
     this.render();
   }
 
-  // 更新界面的直接函数，被setState调用
+  // 更新界面的直接函数，被 setState 调用
   render() {
     this.state.players.forEach(player => player.update());
     this.state.dashboard.update();
@@ -130,7 +129,7 @@ class Tenbou {
       return;
     }
 
-    this.handleRoundEnd('draw', this.state.players[0], drawData);
+    this.handleRoundEnd('ryukyoku', this.state.players[0], drawData);
   }
 
   // 处理多人和
@@ -170,7 +169,7 @@ class Tenbou {
   handleRoundEnd(type, player, ...args) {
     this.recordResult();
     try {
-      this.emitEvent('beforeroundend', player, type, ...args);
+      this.emitEvent('beforeRoundEnd', player, type, ...args);
       this.emitEvent('roundend', player, type, ...args);
       this.showResult();
       this.showNextRoundButton();
@@ -180,7 +179,7 @@ class Tenbou {
     this.setState();
 
     try {
-      this.emitEvent('afterroundend');
+      this.emitEvent('afterRoundEnd');
     } catch (error) {
       this.handleGameOver('被动结束游戏: ' + error.message);
     }

@@ -2,10 +2,9 @@ window.addEventListener('load', main, false);
 
 function main() {
   const game = new Tenbou();
-  game.on('richi', (state, player) => {
-    console.log(state);
-    console.log(player);
 
+  // 立直
+  game.on('richi', (state, player) => {
     if (getSetting()["击飞"]) {
       if (player.score >= 1000) {
         state.dashboard.richi += 1;
@@ -21,7 +20,7 @@ function main() {
     return state;
   });
 
-  game.on('beforeroundend', (state, player, Tenbou, type, data) => {
+  game.on('beforeRoundEnd', (state, player, Tenbou, type, data) => {
     // data 为用户在选择tsumo、ron、流局或者多人和输入的数据
     // type 为 tsumo ron 流局（draw）或者多人和（multiRon）
     const id = player.id;
@@ -37,7 +36,7 @@ function main() {
     }
   });
 
-  game.on('afterroundend', (state, _player, Tenbou) => {
+  game.on('afterRoundEnd', (state, _player, Tenbou) => {
     state.dashboard.honba += 1;
     if (state.dashboard.roundName === '南四局') {
       Tenbou.gameover('正常流局');
