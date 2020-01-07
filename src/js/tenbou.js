@@ -226,7 +226,7 @@ class Tenbou {
 
   // 对外接口，用来主动结束游戏
   gameover(message) {
-    throw new Error(message);
+    handleGameOver(message);
   }
 
   // 用来显示结算界面用
