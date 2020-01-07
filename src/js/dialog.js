@@ -111,8 +111,10 @@ class Dialog {
   showRonDialog() {
     return new Promise(resolve => {
       const loser = ['上家', '对家', '下家'];
-      const fans = ['1翻', '2翻', '3翻', '4翻', '满贯（2/3/4-5翻）', '跳满（6-7翻）', '倍满（8-10翻）', '三倍满（11-12翻）', '役满', '两倍役满', '三倍役满', '四倍役满', '五倍役满', '六倍役满'];
-      const fus = [20, 25, 30, 40, 50, 60, 70, 80, 90, 100, 110];
+      const fans = ['1翻', '2翻', '3翻', '4翻', '满贯（2/3/4-5翻）', '跳满（6-7翻）', '倍满（8-10翻）', '三倍满（11-12翻）']
+        .concat(getSetting()['累计役满'] ? ['役满/累计役满'] : ['役满'])
+        .concat(getSetting()['多倍役满/役满复合'] ? ['两倍役满', '三倍役满', '四倍役满', '五倍役满', '六倍役满'] : []);
+      const fus = [20, 25, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120];
 
       const htmlTemplate =
         `<div class="dialog-container">
@@ -182,7 +184,6 @@ class Dialog {
 
         const data = {};
         for (const entry of formData) {
-          console.log(entry)
           const [field, value] = entry;
           data[field] = +value;
         }

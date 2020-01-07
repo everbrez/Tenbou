@@ -199,4 +199,40 @@ class Player {
       tsumoButton.disabled = false;
     }
   }
+
+  static findById(id) {
+    const players = getPlayers();
+    for (const player of players) {
+      if (player.id === id)
+        return player;
+    }
+  }
+
+  static findByPosition(position) {
+    const players = getPlayers();
+    for (const player of players) {
+      if (player.position === position)
+        return player;
+    }
+  }
+
+  // relation: index of ['上家', '对家', '下家']
+  findByRelation(relation) {
+    let pos = '东南西北'.indexOf(this.position);
+
+    switch (relation) {
+      case 0:
+        pos = (pos + 3) % 4;
+        break;
+      case 1:
+        pos = (pos + 2) % 4;
+        break;
+      case 2:
+        pos = (pos + 1) % 4;
+        break;
+      default:
+    }
+
+    return Player.findByPosition('东南西北'[pos]);
+  }
 }

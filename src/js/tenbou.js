@@ -82,17 +82,18 @@ class Tenbou {
 
   // tenbou 本身对 dom 事件的绑定，一般在 mount 阶段触发
   bindEvent() {
+    const that = this;
     this.state.players.forEach(el => {
       el.onRichi((player) => {
-        this.handleRichi(player);
+        that.handleRichi(player);
       });
 
       el.onRon(player => {
-        this.handleRon(player);
+        that.handleRon(player);
       });
 
       el.onTsumo(player => {
-        this.handleTsumo(player);
+        that.handleTsumo(player);
       });
     });
     // bind next round button
@@ -171,7 +172,7 @@ class Tenbou {
 
   // 一局结束的统一入口
   handleRoundEnd(endType, target, data) {
-    Object.assign(data, { endType: endType });
+    /*Object.assign(data, { endType: endType });
     this.recordResult();
 
     this.emitEvent('beforeRoundEnd', target, data);
@@ -182,7 +183,7 @@ class Tenbou {
 
     this.setState();
 
-    this.emitEvent('afterRoundEnd');
+    this.emitEvent('afterRoundEnd');*/
   }
 
   showNextRoundButton() {
