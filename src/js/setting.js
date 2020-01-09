@@ -39,7 +39,7 @@ function showSetting() {
             <div>
               <span class="form-label">${key}：</span>
               <div class="form-field">
-                <input type="number" name="${key}" id="${key}" value="${configItem.default}">
+                <input type="number" name="${key}" id="${key}" value="${configItem.default}" step="${configItem.step}">
               </div>
             </div>`;
 
@@ -49,7 +49,7 @@ function showSetting() {
               <span class="form-label">${key}：</span>
               <div class="form-field">
                 ${configItem.default.map(num => `
-                <input type="number" name="${key}" value="${num}">
+                <input type="number" name="${key}" value="${num}" step="${configItem.step}">
                 `).join('')}
               </div>
             </div>`;

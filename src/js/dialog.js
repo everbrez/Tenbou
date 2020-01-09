@@ -8,37 +8,24 @@ class Dialog {
 
   showUserConfigDialog() {
     return new Promise((resolve) => {
+      const currentPlayersConfig = Setting.getPlayersConfig();
+      let startPos = 1;
+
+      function getPosition(startPos, index) {
+        return '东南西北'[(index - startPos + 5) % 4]
+      }
+
       const htmlTemplate =
         `<div class="dialog-container">
           <form id="player-name-form">
-            <div>
-            <label for="player1">
-              <span class="position">东</span>:
-              <input placeholder="player1" name="player1" id="player1">
-            </label>
-            </div>
-
-            <div>
-            <label for="player2">
-              <span class="position">南</span>:
-              <input placeholder="player2" name="player2" id="player2">
-            </label>
-            </div>
-
-            <div>
-            <label for="player3">
-              <span class="position">西</span>:
-              <input placeholder="player3" name="player3" id="player3">
-            </label>
-            </div>
-
-            <div>
-            <label for="player4">
-              <span class="position">北</span>:
-              <input placeholder="player4" name="player4" id="player4">
-            </label>
-            </div>
-
+            ${currentPlayersConfig.map((name, index) => `
+              <div>
+              <label for="player${index + 1}">
+                <span class="position">${getPosition(startPos, index)}</span>:
+                <input placeholder="${name}" name="player${index + 1}" id="player${index + 1}">
+              </label>
+              </div>
+            `).join('')}
             <div class="buttons-container">
               <button type="button" id="random-direction-button">random direction</button>
             <button type="button" id="random-name-button">random name</button>
@@ -61,18 +48,19 @@ class Dialog {
       const form = container.querySelector('#player-name-form');
       const positions = [...container.querySelectorAll('.position')];
 
-      let startPos = 1;
 
       form.addEventListener('submit', event => {
         const players = [player1Dom, player2Dom, player3Dom, player4Dom]
           .map(dom => dom.value || dom.placeholder);
+        
+        Setting.setPlayersConfig(players);
 
         container.remove();
         resolve(players.map((name, index) => {
           return {
             id: index,
             name,
-            position: '东南西北'[(index - startPos + 5) % 4],
+            position: getPosition(startPos, index),
           };
         }));
         event.preventDefault();

@@ -1,8 +1,3 @@
-// 0: 'bool',
-// 1: 'singleNumber',
-// 2: 'multiNumber',
-// 3: 'singleSelect',
-// 4: 'multiSelect'
 window.configSetting = {
   '模式': {
     pattern: 3,
@@ -140,7 +135,11 @@ function initPlayers(playersConfig) {
 }
 
 // new Setting
-
+// 0: 'bool',
+// 1: 'singleNumber',
+// 2: 'multiNumber',
+// 3: 'singleSelect',
+// 4: 'multiSelect'
 const Setting = {
   config: {
     '模式': {
@@ -149,9 +148,11 @@ const Setting = {
     },
     '起始点数': {
       pattern: 2,
+      step: 100,
     },
     '1位必要点数': {
       pattern: 1,
+      step: 100,
     },
     '南入/西入': {
       pattern: 0,
@@ -161,6 +162,7 @@ const Setting = {
     },
     '天边': {
       pattern: 1,
+      step: 100,
     },
     '途中流局': {
       pattern: 4,
@@ -168,21 +170,27 @@ const Setting = {
     },
     '流局满贯': {
       pattern: 0,
+      step: 100,
     },
     '不听罚符': {
       pattern: 2,
+      step: 100,
     },
     '立直棒点数': {
       pattern: 1,
+      step: 100,
     },
     '场棒点数': {
       pattern: 1,
+      step: 100,
     },
     '返点': {
       pattern: 1,
+      step: 100,
     },
     '顺位马点': {
       pattern: 2,
+      step: 1,
     },
     '切上满贯': {
       pattern: 0,
@@ -255,7 +263,7 @@ const Setting = {
     let setting = null
     try {
       setting = JSON.parse(settingJSON);
-    } catch(error) {
+    } catch (error) {
       return null
     }
 
@@ -269,5 +277,34 @@ const Setting = {
   reset() {
     this.setting = this.defaultSetting;
     this.saveSetting('');
+  },
+
+  players: null,
+  defaultPlayersConfig: ['player1', 'player2', 'player3', 'player4'],
+
+  getPlayer() {
+    if (!this.players) {
+      this.players = this.getPlayersConfig.map(config => new Player(config))
+    }
+
+    return this.players
+  },
+
+  getPlayersConfig() {
+    let config = null;
+    const playersConfigJSON = localStorage.getItem('players');
+    try {
+      config = JSON.parse(playersConfigJSON);
+    } catch (error) {}
+
+    if (!config) {
+      config = this.defaultPlayersConfig
+    }
+
+    return config
+  },
+
+  setPlayersConfig(config = this.defaultPlayersConfig) {
+    localStorage.setItem('players', JSON.stringify(config));
   }
 }
