@@ -247,10 +247,10 @@ const Setting = {
   // 获取setting，如果当前存在setting，则返回当前setting，否则查找localStorage里的setting
   getSetting() {
     if (!this.setting) {
-      this.setting = this.getLocalSetting() || this.defaultSetting
+      this.setting = this.getLocalSetting() || this.defaultSetting;
     }
 
-    return this.setting
+    return this.setting;
   },
 
   setSetting(newSetting = this.defaultSetting) {
@@ -260,18 +260,18 @@ const Setting = {
 
   getLocalSetting() {
     const settingJSON = localStorage.getItem('setting');
-    let setting = null
+    let setting = null;
     try {
       setting = JSON.parse(settingJSON);
     } catch (error) {
-      return null
+      return null;
     }
 
-    return setting
+    return setting;
   },
 
   saveSetting(setting) {
-    localStorage.setItem('setting', JSON.stringify(setting))
+    localStorage.setItem('setting', JSON.stringify(setting));
   },
 
   reset() {

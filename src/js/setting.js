@@ -146,6 +146,6 @@ function showSetting() {
   }, false);
 
   function backToIndex() {
-    location.href = '/src/html/getStarted.html'
+    location.href = '../html/getStarted.html';
   }
 }
