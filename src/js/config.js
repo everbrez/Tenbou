@@ -1,76 +1,3 @@
-// 0: 'bool',
-// 1: 'singleNumber',
-// 2: 'multiNumber',
-// 3: 'singleSelect',
-// 4: 'multiSelect'
-window.configSetting = {
-  '模式': {
-    pattern: 3,
-    list: ['四人东', '四人南'],
-  },
-  '起始点数': {
-    pattern: 2,
-  },
-  '1位必要点数': {
-    pattern: 1,
-  },
-  '南入/西入': {
-    pattern: 0,
-  },
-  '击飞': {
-    pattern: 0,
-  },
-  '天边': {
-    pattern: 1,
-  },
-  '途中流局': {
-    pattern: 4,
-    list: ['四风连打', '四杠散了', '四家立直', '九种九牌', '三家和了'],
-  },
-  '流局满贯': {
-    pattern: 0,
-  },
-  '不听罚符': {
-    pattern: 2,
-  },
-  '立直棒点数': {
-    pattern: 1,
-  },
-  '场棒点数': {
-    pattern: 1,
-  },
-  '返点': {
-    pattern: 1,
-  },
-  '顺位马点': {
-    pattern: 2,
-  },
-  '切上满贯': {
-    pattern: 0,
-  },
-  '头跳': {
-    pattern: 0,
-  },
-  '和牌连庄': {
-    pattern: 0,
-  },
-  '和了终局': {
-    pattern: 0,
-  },
-  '听牌连庄': {
-    pattern: 0,
-  },
-  '听牌终局': {
-    pattern: 0,
-  },
-  '累计役满': {
-    pattern: 0,
-  },
-  '多倍役满/役满复合': {
-    pattern: 0,
-  }
-}
-
 window.setting = {
   '模式': '四人南',
   '起始点数': [25000, 25000, 25000, 25000],
@@ -140,7 +67,11 @@ function initPlayers(playersConfig) {
 }
 
 // new Setting
-
+// 0: 'bool',
+// 1: 'singleNumber',
+// 2: 'multiNumber',
+// 3: 'singleSelect',
+// 4: 'multiSelect'
 const Setting = {
   config: {
     '模式': {
@@ -149,9 +80,11 @@ const Setting = {
     },
     '起始点数': {
       pattern: 2,
+      step: 100,
     },
     '1位必要点数': {
       pattern: 1,
+      step: 100,
     },
     '南入/西入': {
       pattern: 0,
@@ -161,6 +94,7 @@ const Setting = {
     },
     '天边': {
       pattern: 1,
+      step: 100,
     },
     '途中流局': {
       pattern: 4,
@@ -168,21 +102,27 @@ const Setting = {
     },
     '流局满贯': {
       pattern: 0,
+      step: 100,
     },
     '不听罚符': {
       pattern: 2,
+      step: 100,
     },
     '立直棒点数': {
       pattern: 1,
+      step: 100,
     },
     '场棒点数': {
       pattern: 1,
+      step: 100,
     },
     '返点': {
       pattern: 1,
+      step: 100,
     },
     '顺位马点': {
       pattern: 2,
+      step: 1,
     },
     '切上满贯': {
       pattern: 0,
@@ -269,5 +209,34 @@ const Setting = {
   reset() {
     this.setting = this.defaultSetting;
     this.saveSetting('');
+  },
+
+  players: null,
+  defaultPlayersConfig: ['player1', 'player2', 'player3', 'player4'],
+
+  getPlayer() {
+    if (!this.players) {
+      this.players = this.getPlayersConfig.map(config => new Player(config))
+    }
+
+    return this.players
+  },
+
+  getPlayersConfig() {
+    let config = null;
+    const playersConfigJSON = localStorage.getItem('players');
+    try {
+      config = JSON.parse(playersConfigJSON);
+    } catch (error) {}
+
+    if (!config) {
+      config = this.defaultPlayersConfig
+    }
+
+    return config
+  },
+
+  setPlayersConfig(config = this.defaultPlayersConfig) {
+    localStorage.setItem('players', JSON.stringify(config));
   }
 }

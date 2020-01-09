@@ -251,9 +251,10 @@ class Tenbou {
 
   // 释放资源
   handleGameEnd() {
-    this.state.players.forEach(player => player.unmount());
-    this.state.dashboard.unmount();
+    // this.state.players.forEach(player => player.unmount());
+    // this.state.dashboard.unmount();
     this.onEndHandler.forEach(cb => cb());
+    location.href = './getStarted.html'
   }
 
   // 对外接口，一场游戏的开始

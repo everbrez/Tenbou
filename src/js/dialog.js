@@ -8,37 +8,24 @@ class Dialog {
 
   showUserConfigDialog() {
     return new Promise((resolve) => {
+      const currentPlayersConfig = Setting.getPlayersConfig();
+      let startPos = 1;
+
+      function getPosition(startPos, index) {
+        return '东南西北' [(index - startPos + 5) % 4]
+      }
+
       const htmlTemplate =
         `<div class="dialog-container">
           <form id="player-name-form">
-            <div>
-            <label for="player1">
-              <span class="position">东</span>:
-              <input placeholder="player1" name="player1" id="player1">
-            </label>
-            </div>
-
-            <div>
-            <label for="player2">
-              <span class="position">南</span>:
-              <input placeholder="player2" name="player2" id="player2">
-            </label>
-            </div>
-
-            <div>
-            <label for="player3">
-              <span class="position">西</span>:
-              <input placeholder="player3" name="player3" id="player3">
-            </label>
-            </div>
-
-            <div>
-            <label for="player4">
-              <span class="position">北</span>:
-              <input placeholder="player4" name="player4" id="player4">
-            </label>
-            </div>
-
+            ${currentPlayersConfig.map((name, index) => `
+              <div>
+              <label for="player${index + 1}">
+                <span class="position">${getPosition(startPos, index)}</span>:
+                <input placeholder="${name}" name="player${index + 1}" id="player${index + 1}">
+              </label>
+              </div>
+            `).join('')}
             <div class="buttons-container">
               <button type="button" id="random-direction-button">random direction</button>
             <button type="button" id="random-name-button">random name</button>
@@ -56,23 +43,28 @@ class Dialog {
       const player2Dom = container.querySelector('#player2');
       const player3Dom = container.querySelector('#player3');
       const player4Dom = container.querySelector('#player4');
-      const randomPosButton = container.querySelector('#random-direction-button');
-      const randomNameButton = container.querySelector('#random-name-button');
+      const randomPosButton = container.querySelector(
+        '#random-direction-button');
+      const randomNameButton = container.querySelector(
+        '#random-name-button');
       const form = container.querySelector('#player-name-form');
       const positions = [...container.querySelectorAll('.position')];
 
-      let startPos = 1;
 
       form.addEventListener('submit', event => {
-        const players = [player1Dom, player2Dom, player3Dom, player4Dom]
+        const players = [player1Dom, player2Dom, player3Dom,
+            player4Dom
+          ]
           .map(dom => dom.value || dom.placeholder);
+
+        Setting.setPlayersConfig(players);
 
         container.remove();
         resolve(players.map((name, index) => {
           return {
             id: index,
             name,
-            position: '东南西北'[(index - startPos + 5) % 4],
+            position: getPosition(startPos, index),
           };
         }));
         event.preventDefault();
@@ -86,7 +78,7 @@ class Dialog {
         }
 
         positions.forEach((el, index) => {
-          el.innerHTML = '东南西北'[(index - startPos + 1 + 4) % 4];
+          el.innerHTML = '东南西北' [(index - startPos + 1 + 4) % 4];
         });
       });
 
@@ -107,80 +99,169 @@ class Dialog {
     });
   }
 
+  getRoundEndCommonDialog(submitCb, cancelCb) {
+    const fans = ['1翻', '2翻', '3翻', '4翻', '满贯（3/4-5翻）', '跳满（6-7翻）',
+        '倍满（8-10翻）', '三倍满（11-12翻）'
+      ]
+      .concat(Setting.getSetting()['累计役满'] ? ['役满/累计役满'] : ['役满'])
+      .concat(Setting.getSetting()['多倍役满/役满复合'] ? ['两倍役满', '三倍役满', '四倍役满', '五倍役满',
+        '六倍役满'
+      ] : []);
+    const fus = [20, 25, 30, 40, 50, 60, 70, 80, 90, 100, 110];
+
+    const htmlTemplate =
+      `
+      <div class="dialog-container">
+      <form id="round-end-form">
+        <div>
+          <span class="form-label">选择翻：</span>
+          <div class="form-field">
+          ${fans.map((fan, index) => `
+            <label for="fan-${index}">
+              <input type="radio" id="fan-${index}" name="fan" value="${index}" ${index ? '' : 'checked'}>
+            ${fan}</label>
+          `).join('')}
+          </div>
+        </div>
+
+        <div>
+          <span class="form-label">选择符：</span>
+          <div class="form-field">
+          ${fus.map((fu, index) => `
+            <label for="fu-${fu}">
+              <input type="radio" id="fu-${fu}" name="fu" value="${fu}" ${!index ? 'checked': ''}>
+            ${fu}符</label>
+          `).join('')}
+          </div>
+        </div>
+
+        <div class="roundend-button-container">
+          <button type="submit">确定</button>
+          <button type="button" id="cancel-button">cancel</button>
+        </div>
+        </form>
+      </div>`;
+
+    const container = document.createElement('div');
+    container.innerHTML = htmlTemplate;
+
+    const cancelButton = container.querySelector('#cancel-button');
+    const roundEndForm = container.querySelector('#round-end-form');
+
+    cancelButton.addEventListener('click', cancelCb, false);
+    roundEndForm.addEventListener('submit', event => {
+      event.preventDefault();
+      event.stopPropagation();
+      const formData = new FormData(roundEndForm);
+      submitCb(formData);
+    }, false);
+
+    roundEndForm.addEventListener('change', event => {
+      if (event.target.name === 'fan') {
+        const fan = +event.target.value;
+        const setting = Setting.getSetting();
+
+        const fuInputs = [...document.getElementsByName('fu')]
+        fuInputs.forEach(input => input.disabled = false);
+        // 大于5翻及以上，不用选择符
+        if (fan >= 4) {
+          fuInputs.forEach(input => input.disabled = true);
+        }
+
+        //  4 翻，40+(false) 30+(true)
+        if (fan === 3) {
+          const boundary = setting['切上满贯'] ? 30 : 40;
+          fuInputs.forEach(input => {
+            if (input.value >= boundary) {
+              input.disabled = true;
+            }
+          })
+
+          fuInputs[0].checked = true;
+        }
+
+        // 3 翻
+        if (fan === 2) {
+          const boundary = setting['切上满贯'] ? 60 : 70;
+          fuInputs.forEach(input => {
+            if (input.value >= boundary) {
+              input.disabled = true;
+            }
+          })
+
+          fuInputs[0].checked = true;
+        }
+
+        // //  等于 1, 2, 3, 4 翻，禁止20符
+        // if (fan < 4) {
+        //   document.getElementById('fu-20').disabled = true;
+        //   document.getElementById('fu-25').checked = true;
+        // }
+
+        // // 等于 1 翻， 禁止 25 符
+        // if (fan === 0) {
+        //   console.log(2333)
+        //   document.getElementById('fu-25').disabled = true;
+        //   document.getElementById('fu-30').checked = true;
+        // }
+      }
+    }, false)
+
+    return container
+  }
+
   // used to be showRoundEndDialog
   showRonDialog() {
     return new Promise(resolve => {
       const loser = ['上家', '对家', '下家'];
-      const fans = ['1翻', '2翻', '3翻', '4翻', '满贯（3/4-5翻）', '跳满（6-7翻）', '倍满（8-10翻）', '三倍满（11-12翻）']
-        .concat(getSetting()['累计役满'] ? ['役满/累计役满'] : ['役满'])
-        .concat(getSetting()['多倍役满/役满复合'] ? ['两倍役满', '三倍役满', '四倍役满', '五倍役满', '六倍役满'] : []);
-      const fus = [20, 25, 30, 40, 50, 60, 70, 80, 90, 100, 110];
+      const loserSelectHtmlTemplate = `
+        <span class="form-label">放铳玩家：</span>
+        <div class="form-field">
+          ${loser.map((loser, index) => `
+          <label for="loser-${index}">
+            <input type="radio" required id="loser-${index}" name="loser" value="${index}">
+            ${loser}</label>
+          `).join('')}
+        </div>`
 
-      const htmlTemplate =
-        `<div class="dialog-container">
-          <form id="round-end-form">
-            <div>
-              <span class="form-label">放铳玩家：</span>
-              <div class="form-field">
-                ${loser.map((loser, index) => `
-                <label for="loser-${index}">
-                  <input type="radio" id="loser-${index}" name="loser" value="${index}">
-                ${loser}</label>
-                `).join('')}
-              </div>
-            </div>
-
-            <div>
-              <span class="form-label">选择翻：</span>
-              <div class="form-field">
-              ${fans.map((fan, index) => `
-                <label for="fan-${index}">
-                  <input type="radio" id="fan-${index}" name="fan" value="${index}" ${index ? '' : 'checked'}>
-                ${fan}</label>
-              `).join('')}
-              </div>
-            </div>
-
-            <div>
-              <span class="form-label">选择符：</span>
-              <div class="form-field">
-              ${fus.map((fu, index) => `
-                <label for="fu-${index}">
-                  <input type="radio" id="fu-${index}" name="fu" value="${fu}" ${index ? '' : 'checked'}>
-                ${fu}符</label>
-              `).join('')}
-              </div>
-            </div>
-
-            <div class="roundend-button-container">
-              <button type="submit">确定</button>
-              <button type="button" id="cancel-button">cancel</button>
-            </div>
-          </form>
-        </div>`;
+      const loserSelectFormItem = document.createElement('div');
+      loserSelectFormItem.innerHTML = loserSelectHtmlTemplate;
 
       const container = document.createElement('div');
-      container.className = 'dialog';
-      container.innerHTML = htmlTemplate;
 
-      document.body.append(container);
+      const submitCb = (formData) => {
+        const data = {};
+        for (const entry of formData) {
+          const [field, value] = entry;
+          data[field] = +value;
+        }
 
-      const cancelButton = container.querySelector('#cancel-button');
-      const roundEndForm = container.querySelector('#round-end-form');
+        container.remove();
+        resolve(data);
+      }
 
-      cancelButton.addEventListener('click', () => {
+      const cancelCb = (event) => {
         container.remove();
         resolve(false);
-      });
-      roundEndForm.addEventListener('submit', event => {
-        event.preventDefault();
-        event.stopPropagation();
-        const formData = new FormData(roundEndForm);
+      }
 
-        if (!formData.has('loser')) {
-          alert('请填写放铳玩家');
-          return;
-        }
+      const common = this.getRoundEndCommonDialog(submitCb, cancelCb);
+      const form = common.querySelector('#round-end-form');
+      form.insertBefore(loserSelectFormItem, form.children[0]);
+
+      container.append(common)
+      container.className = 'dialog';
+      document.body.append(container);
+
+    });
+  }
+
+  showTsumoDialog() {
+    return new Promise(resolve => {
+      const container = document.createElement('div');
+
+      const submitCb = (formData) => {
+
 
         const data = {};
         for (const entry of formData) {
@@ -190,13 +271,18 @@ class Dialog {
 
         container.remove();
         resolve(data);
-      }, false);
-    });
-  }
+      }
 
-  showTsumoDialog() {
-    return new Promise(resolve => {
+      const cancelCb = (event) => {
+        container.remove();
+        resolve(false);
+      }
 
+      const common = this.getRoundEndCommonDialog(submitCb, cancelCb);
+
+      container.append(common)
+      container.className = 'dialog';
+      document.body.append(container);
     });
   }
 
@@ -270,7 +356,8 @@ class Dialog {
 
   showRyukyokuDialog() {
     return new Promise(resolve => {
-      const options = ['荒牌流局'].concat(getSetting()['途中流局'].concat(getSetting()['流局满贯'] ? ['流局满贯'] : []));
+      const options = ['荒牌流局'].concat(Setting.getSetting()['途中流局'].concat(
+        Setting.getSetting()['流局满贯'] ? ['流局满贯'] : []));
       const htmlTemplate =
         `<div class="dialog-container">
           <form id="draw-form">
@@ -311,148 +398,6 @@ class Dialog {
       cancelButton.addEventListener('click', () => {
         container.remove();
         resolve(false);
-      }, false);
-    });
-  }
-
-  // move to html file.
-  showConfigDialog() {
-    return new Promise(resolve => {
-      const setting = window.configSetting;
-      // 0: 'bool',
-      // 1: 'singleNumber',
-      // 2: 'multiNumber',
-      // 3: 'singleSelect',
-      // 4: 'multiSelect'
-
-      const htmlSetting = Object.keys(setting).map(key => {
-        const config = setting[key];
-        switch (config.pattern) {
-          case 0:
-            return `
-              <div>
-                <span class="form-label">${key}：</span>
-                <div class="form-field">
-                  <label for="${key}-yes">
-                    <input type="radio" name="${key}" id="${key}-yes" value="true" ${config.default ? 'checked' : ''}>
-                    是
-                  </label>
-                  <label for="${key}-no">
-                    <input type="radio" name="${key}" id="${key}-no" value="" ${config.default ? '' : 'checked'}>
-                    否
-                  </label>
-                </div>
-              </div>`;
-
-          case 1:
-            return `
-              <div>
-                <span class="form-label">${key}：</span>
-                <div class="form-field">
-                  <input type="number" name="${key}" id="${key}" value="${config.default}">
-                </div>
-              </div>`;
-
-          case 2:
-            return `
-              <div>
-                <span class="form-label">${key}：</span>
-                <div class="form-field">
-                  ${config.default.map(num => `
-                  <input type="number" name="${key}" value="${num}">
-                  `).join('')}
-                </div>
-              </div>`;
-
-          case 3:
-            return `
-              <div>
-                <span class="form-label">${key}：</span>
-                <div class="form-field">
-                  ${config.list.map(item => `
-                  <label for="${key}-${item}">
-                    <input type="radio" name="${key}" id="${key}-${item}" value="${item}" ${config.default === item ? 'checked' : ''}>
-                    ${item}
-                  </label>
-                  `).join('')}
-                </div>
-              </div>`;
-
-          case 4:
-            return `
-              <div>
-                <span class="form-label">${key}：</span>
-                <div class="form-field">
-                  ${config.list.map(item => `
-                  <label>
-                    <input type="checkbox" name="${key}" id="${key}-${item}" value="${item}" ${config.default.includes(item) ? 'checked' : ''}>
-                    ${item}
-                  </label>
-                  `).join('')}
-                </div>
-              </div>`;
-
-          default:
-            return '';
-        }
-      }).join('');
-
-      const htmlTemplate =
-        `<div class="dialog-container">
-          <form id="config-form">
-            ${htmlSetting}
-            <div class="config-buttons-container">
-              <button type="submit">submit</button>
-              <button type="button" id="default-config-button">use default setting</button>
-            </div>
-          </form>
-        </div>`;
-
-      const container = document.createElement('div');
-      container.className = 'dialog';
-      container.innerHTML = htmlTemplate;
-      document.body.append(container);
-
-      const form = container.querySelector('#config-form');
-      const defaultConfigButton = container.querySelector('#default-config-button');
-
-      form.addEventListener('submit', event => {
-        event.preventDefault();
-        event.stopPropagation();
-
-        const formData = new FormData(form);
-        const newSetting = {};
-        Object.keys(setting).map(key => {
-          const config = setting[key];
-          switch (config.pattern) {
-            case 0:
-              newSetting[key] = !!formData.get(key);
-              break;
-            case 1:
-              newSetting[key] = +formData.get(key);
-              break;
-            case 2:
-              newSetting[key] = formData.getAll(key).map(Number);
-              break;
-            case 3:
-              newSetting[key] = formData.get(key);
-              break;
-            case 4:
-              newSetting[key] = formData.getAll(key);
-              break;
-            default:
-          }
-        });
-
-        container.remove();
-        setSetting(newSetting);
-        resolve(newSetting);
-      }, false);
-
-      //TODO: to rewrite
-      defaultConfigButton.addEventListener('click', () => {
-        container.remove();
-        resolve(window.configSetting);
       }, false);
     });
   }
