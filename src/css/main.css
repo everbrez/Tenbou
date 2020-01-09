@@ -463,3 +463,23 @@ body {
   display: flex;
   justify-content: flex-end;
 }
+
+/* Get Started */
+.getstart {
+  box-sizing: border-box;
+  display: flex;
+  flex-flow: column nowrap;
+  background: none;
+  padding-bottom: 10%;
+}
+
+.button {
+  min-width: 180px;
+  text-decoration: none;
+  text-align: center;
+  line-height: 2;
+  color: black;
+  background: lightgreen;
+  border-radius: 4px;
+  margin: .2em;
+}

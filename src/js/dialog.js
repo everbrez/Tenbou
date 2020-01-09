@@ -315,6 +315,7 @@ class Dialog {
     });
   }
 
+  // move to html file.
   showConfigDialog() {
     return new Promise(resolve => {
       const setting = window.configSetting;
