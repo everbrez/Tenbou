@@ -60,6 +60,8 @@ class Player {
     this.avatar = avatar; // 64978502_p5
     this.id = id; // id: number
     this.score = getSetting()['起始点数']['东南西北'.indexOf(position)];
+    this.roundData = 0;
+
     this.result = '';
     this.isShowResult = false;
 
@@ -72,27 +74,20 @@ class Player {
     this.result = '';
     this.isShowResult = false;
     this.richi = false;
-    this.record = undefined;
+    this.roundData = 0;
   }
 
   unmount() {
     this.container.remove();
   }
 
-  // 在进入beforeroundend事件之前，会对player的分数进行存储，用于后面计算差值。
-  recordScore() {
-    this.record = this.score;
-  }
-
   showResult() {
-    const result = this.score - this.record;
-
-    if (result === 0)
+    if (this.roundData === 0)
       this.result = '';
-    else if (result > 0)
-      this.result = '+ ' + result;
+    else if (this.roundData > 0)
+      this.result = '+ ' + this.roundData;
     else
-      this.result = '- ' + -result;
+      this.result = '- ' + -this.roundData;
 
     this.isShowResult = true;
   }
@@ -189,7 +184,7 @@ class Player {
 
     if (this.isShowResult) {
       scoreContainer.innerHTML =
-        `<span class="score-result-container">${this.record}<span class="score-result"><br/>${this.result}</span></span>`;
+        `<span class="score-result-container">${this.score}<span class="score-result"><br/>${this.result}</span></span>`;
       richiButton.disabled = true;
       ronButton.disabled = true;
       tsumoButton.disabled = true;

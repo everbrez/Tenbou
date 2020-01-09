@@ -24,6 +24,7 @@ function main() {
   game.on('ron', (state, event) => {
     const {
       target: player,
+      data,
       data: { fan, fu },
       loser = player.findByRelation(data['loser'])
     } = event;
@@ -32,7 +33,7 @@ function main() {
     // fans = ['1翻', '2翻', '3翻', '4翻', '满贯（3/4-5翻）', '跳满（6-7翻）', '倍满（8-10翻）', '三倍满（11-12翻）', '役满/累计役满', '两倍役满', '三倍役满', '四倍役满', '五倍役满', '六倍役满'];
     switch (fan) {
       case 0: case 1: case 2: case 3:
-        score = Math.round(fu * 2 ** (fan + 1 + 2));
+        score = fu * 2 ** (fan + 1 + 2);
         if (score >= 2000)
           score = 2000;
         break;
@@ -73,6 +74,15 @@ function main() {
       score *= 6;
     else
       score *= 4;
+
+    score = Math.ceil(score / 100) * 100;
+
+    score += state.dashboard.honba * getSetting()['场棒点数'];
+
+    player.roundData = score + state.dashboard.richi * getSetting()['立直棒点数'];
+    loser.roundData = -score;
+
+    console.log(getPlayers());
 
     return state;
   });
