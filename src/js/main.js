@@ -7,10 +7,10 @@ function main() {
   game.on('richi', (state, event) => {
     const {
       target: player,
-      richiPoint = getSetting()['立直棒点数']
+      richiPoint = Setting.getSetting()['立直棒点数']
     } = event;
 
-    if (getSetting()['击飞'] && player.score < richiPoint) {
+    if (Setting.getSetting()['击飞'] && player.score < richiPoint) {
       alert('点数不足以立直');
     } else {
       state.dashboard.richi += 1;

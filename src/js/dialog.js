@@ -103,8 +103,8 @@ class Dialog {
     const fans = ['1翻', '2翻', '3翻', '4翻', '满贯（3/4-5翻）', '跳满（6-7翻）',
         '倍满（8-10翻）', '三倍满（11-12翻）'
       ]
-      .concat(getSetting()['累计役满'] ? ['役满/累计役满'] : ['役满'])
-      .concat(getSetting()['多倍役满/役满复合'] ? ['两倍役满', '三倍役满', '四倍役满', '五倍役满',
+      .concat(Setting.getSetting()['累计役满'] ? ['役满/累计役满'] : ['役满'])
+      .concat(Setting.getSetting()['多倍役满/役满复合'] ? ['两倍役满', '三倍役满', '四倍役满', '五倍役满',
         '六倍役满'
       ] : []);
     const fus = [20, 25, 30, 40, 50, 60, 70, 80, 90, 100, 110];
@@ -356,8 +356,8 @@ class Dialog {
 
   showRyukyokuDialog() {
     return new Promise(resolve => {
-      const options = ['荒牌流局'].concat(getSetting()['途中流局'].concat(
-        getSetting()['流局满贯'] ? ['流局满贯'] : []));
+      const options = ['荒牌流局'].concat(Setting.getSetting()['途中流局'].concat(
+        Setting.getSetting()['流局满贯'] ? ['流局满贯'] : []));
       const htmlTemplate =
         `<div class="dialog-container">
           <form id="draw-form">
@@ -398,149 +398,6 @@ class Dialog {
       cancelButton.addEventListener('click', () => {
         container.remove();
         resolve(false);
-      }, false);
-    });
-  }
-
-  // move to html file.
-  showConfigDialog() {
-    return new Promise(resolve => {
-      const setting = window.configSetting;
-      // 0: 'bool',
-      // 1: 'singleNumber',
-      // 2: 'multiNumber',
-      // 3: 'singleSelect',
-      // 4: 'multiSelect'
-
-      const htmlSetting = Object.keys(setting).map(key => {
-        const config = setting[key];
-        switch (config.pattern) {
-          case 0:
-            return `
-              <div>
-                <span class="form-label">${key}：</span>
-                <div class="form-field">
-                  <label for="${key}-yes">
-                    <input type="radio" name="${key}" id="${key}-yes" value="true" ${config.default ? 'checked' : ''}>
-                    是
-                  </label>
-                  <label for="${key}-no">
-                    <input type="radio" name="${key}" id="${key}-no" value="" ${config.default ? '' : 'checked'}>
-                    否
-                  </label>
-                </div>
-              </div>`;
-
-          case 1:
-            return `
-              <div>
-                <span class="form-label">${key}：</span>
-                <div class="form-field">
-                  <input type="number" name="${key}" id="${key}" value="${config.default}">
-                </div>
-              </div>`;
-
-          case 2:
-            return `
-              <div>
-                <span class="form-label">${key}：</span>
-                <div class="form-field">
-                  ${config.default.map(num => `
-                  <input type="number" name="${key}" value="${num}">
-                  `).join('')}
-                </div>
-              </div>`;
-
-          case 3:
-            return `
-              <div>
-                <span class="form-label">${key}：</span>
-                <div class="form-field">
-                  ${config.list.map(item => `
-                  <label for="${key}-${item}">
-                    <input type="radio" name="${key}" id="${key}-${item}" value="${item}" ${config.default === item ? 'checked' : ''}>
-                    ${item}
-                  </label>
-                  `).join('')}
-                </div>
-              </div>`;
-
-          case 4:
-            return `
-              <div>
-                <span class="form-label">${key}：</span>
-                <div class="form-field">
-                  ${config.list.map(item => `
-                  <label>
-                    <input type="checkbox" name="${key}" id="${key}-${item}" value="${item}" ${config.default.includes(item) ? 'checked' : ''}>
-                    ${item}
-                  </label>
-                  `).join('')}
-                </div>
-              </div>`;
-
-          default:
-            return '';
-        }
-      }).join('');
-
-      const htmlTemplate =
-        `<div class="dialog-container">
-          <form id="config-form">
-            ${htmlSetting}
-            <div class="config-buttons-container">
-              <button type="submit">submit</button>
-              <button type="button" id="default-config-button">use default setting</button>
-            </div>
-          </form>
-        </div>`;
-
-      const container = document.createElement('div');
-      container.className = 'dialog';
-      container.innerHTML = htmlTemplate;
-      document.body.append(container);
-
-      const form = container.querySelector('#config-form');
-      const defaultConfigButton = container.querySelector(
-        '#default-config-button');
-
-      form.addEventListener('submit', event => {
-        event.preventDefault();
-        event.stopPropagation();
-
-        const formData = new FormData(form);
-        const newSetting = {};
-        Object.keys(setting).map(key => {
-          const config = setting[key];
-          switch (config.pattern) {
-            case 0:
-              newSetting[key] = !!formData.get(key);
-              break;
-            case 1:
-              newSetting[key] = +formData.get(key);
-              break;
-            case 2:
-              newSetting[key] = formData.getAll(key).map(Number);
-              break;
-            case 3:
-              newSetting[key] = formData.get(key);
-              break;
-            case 4:
-              newSetting[key] = formData.getAll(key);
-              break;
-            default:
-          }
-        });
-
-        container.remove();
-        setSetting(newSetting);
-        resolve(newSetting);
-      }, false);
-
-      //TODO: to rewrite
-      defaultConfigButton.addEventListener('click', () => {
-        container.remove();
-        resolve(window.configSetting);
       }, false);
     });
   }
