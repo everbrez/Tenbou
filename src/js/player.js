@@ -59,13 +59,9 @@ class Player {
     this.name = name;
     this.avatar = avatar; // 64978502_p5
     this.id = id; // id: number
-<<<<<<< HEAD
     this.score = getSetting()['起始点数']['东南西北'.indexOf(position)];
     this.roundData = 0;
 
-=======
-    this.score = Setting.getSetting()['起始点数']['东南西北'.indexOf(position)];
->>>>>>> e2b8da6b7be597fe74bf9ceb02bcebc449118ead
     this.result = '';
     this.isShowResult = false;
 
