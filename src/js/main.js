@@ -79,10 +79,8 @@ function main() {
 
     score += state.dashboard.honba * getSetting()['场棒点数'];
 
-    player.roundData = score + state.dashboard.richi * getSetting()['立直棒点数'];
-    loser.roundData = -score;
-
-    console.log(getPlayers());
+    player.roundData += score + state.dashboard.richi * getSetting()['立直棒点数'];
+    loser.roundData += -score;
 
     return state;
   });
@@ -98,7 +96,7 @@ function main() {
     return state;*/
   });
 
-  game.on('roundend', (state, event) => {
+  game.on('roundEnd', (state, event) => {
     /*if (player.score > 42000) {
       Tenbou.gameover('点数超过42000');
     }*/

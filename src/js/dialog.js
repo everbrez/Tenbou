@@ -12,7 +12,7 @@ class Dialog {
       let startPos = 1;
 
       function getPosition(startPos, index) {
-        return '东南西北' [(index - startPos + 5) % 4]
+        return '东南西北'[(index - startPos + 5) % 4]
       }
 
       const htmlTemplate =
@@ -53,8 +53,8 @@ class Dialog {
 
       form.addEventListener('submit', event => {
         const players = [player1Dom, player2Dom, player3Dom,
-            player4Dom
-          ]
+          player4Dom
+        ]
           .map(dom => dom.value || dom.placeholder);
 
         Setting.setPlayersConfig(players);
@@ -78,7 +78,7 @@ class Dialog {
         }
 
         positions.forEach((el, index) => {
-          el.innerHTML = '东南西北' [(index - startPos + 1 + 4) % 4];
+          el.innerHTML = '东南西北'[(index - startPos + 1 + 4) % 4];
         });
       });
 
@@ -100,45 +100,41 @@ class Dialog {
   }
 
   getRoundEndCommonDialog(submitCb, cancelCb) {
-    const fans = ['1翻', '2翻', '3翻', '4翻', '满贯（3/4-5翻）', '跳满（6-7翻）',
-        '倍满（8-10翻）', '三倍满（11-12翻）'
-      ]
+    const fans = ['1翻', '2翻', '3翻', '4翻', '满贯（3/4-5翻）', '跳满（6-7翻）', '倍满（8-10翻）', '三倍满（11-12翻）']
       .concat(Setting.getSetting()['累计役满'] ? ['役满/累计役满'] : ['役满'])
-      .concat(Setting.getSetting()['多倍役满/役满复合'] ? ['两倍役满', '三倍役满', '四倍役满', '五倍役满',
-        '六倍役满'
+      .concat(Setting.getSetting()['多倍役满/役满复合'] ? ['两倍役满', '三倍役满', '四倍役满', '五倍役满', '六倍役满'
       ] : []);
     const fus = [20, 25, 30, 40, 50, 60, 70, 80, 90, 100, 110];
 
     const htmlTemplate =
-      `
-      <div class="dialog-container">
-      <form id="round-end-form">
-        <div>
-          <span class="form-label">选择翻：</span>
-          <div class="form-field">
-          ${fans.map((fan, index) => `
-            <label for="fan-${index}">
-              <input type="radio" id="fan-${index}" name="fan" value="${index}" ${index ? '' : 'checked'}>
-            ${fan}</label>
-          `).join('')}
+      `<div class="dialog-container">
+        <form id="round-end-form">
+          <div>
+            <span class="form-label">选择翻：</span>
+            <div class="form-field">
+            ${fans.map((fan, index) => `
+              <label for="fan-${index}">
+                <input type="radio" id="fan-${index}" name="fan" value="${index}" ${index ? '' : 'checked'}>
+              ${fan}</label>
+            `).join('')}
+            </div>
           </div>
-        </div>
 
-        <div>
-          <span class="form-label">选择符：</span>
-          <div class="form-field">
-          ${fus.map((fu, index) => `
-            <label for="fu-${fu}">
-              <input type="radio" id="fu-${fu}" name="fu" value="${fu}" ${!index ? 'checked': ''}>
-            ${fu}符</label>
-          `).join('')}
+          <div>
+            <span class="form-label">选择符：</span>
+            <div class="form-field">
+            ${fus.map((fu, index) => `
+              <label for="fu-${fu}">
+                <input type="radio" id="fu-${fu}" name="fu" value="${fu}" ${index === 2 ? 'checked' : ''} ${index < 2 ? "disabled" : ""}>
+              ${fu}符</label>
+            `).join('')}
+            </div>
           </div>
-        </div>
 
-        <div class="roundend-button-container">
-          <button type="submit">确定</button>
-          <button type="button" id="cancel-button">cancel</button>
-        </div>
+          <div class="roundend-button-container">
+            <button type="submit">确定</button>
+            <button type="button" id="cancel-button">cancel</button>
+          </div>
         </form>
       </div>`;
 
@@ -161,53 +157,45 @@ class Dialog {
         const fan = +event.target.value;
         const setting = Setting.getSetting();
 
-        const fuInputs = [...document.getElementsByName('fu')]
+        const fuInputs = [...document.getElementsByName('fu')];
         fuInputs.forEach(input => input.disabled = false);
-        // 大于5翻及以上，不用选择符
-        if (fan >= 4) {
-          fuInputs.forEach(input => input.disabled = true);
-        }
 
+        // 大于等于满贯，不用选择符
+        if (fan >= 4) {
+          fuInputs.forEach(input => {
+            input.disabled = true;
+            input.checked = false;
+          });
+        }
         //  4 翻，40+(false) 30+(true)
-        if (fan === 3) {
+        else if (fan === 3) {
           const boundary = setting['切上满贯'] ? 30 : 40;
           fuInputs.forEach(input => {
             if (input.value >= boundary) {
               input.disabled = true;
             }
-          })
-
+          });
           fuInputs[0].checked = true;
         }
-
         // 3 翻
-        if (fan === 2) {
+        else if (fan === 2) {
           const boundary = setting['切上满贯'] ? 60 : 70;
           fuInputs.forEach(input => {
             if (input.value >= boundary) {
               input.disabled = true;
             }
-          })
-
+          });
           fuInputs[0].checked = true;
         }
-
-        // //  等于 1, 2, 3, 4 翻，禁止20符
-        // if (fan < 4) {
-        //   document.getElementById('fu-20').disabled = true;
-        //   document.getElementById('fu-25').checked = true;
-        // }
-
-        // // 等于 1 翻， 禁止 25 符
-        // if (fan === 0) {
-        //   console.log(2333)
-        //   document.getElementById('fu-25').disabled = true;
-        //   document.getElementById('fu-30').checked = true;
-        // }
+        // 等于 1 翻， 禁止 20, 25 符
+        else if (fan === 0) {
+          fuInputs[2].disabled = fuInputs[2].disabled = true;
+          fuInputs[2].checked = true;
+        }
       }
-    }, false)
+    }, false);
 
-    return container
+    return container;
   }
 
   // used to be showRoundEndDialog
@@ -249,10 +237,9 @@ class Dialog {
       const form = common.querySelector('#round-end-form');
       form.insertBefore(loserSelectFormItem, form.children[0]);
 
-      container.append(common)
+      container.append(common);
       container.className = 'dialog';
       document.body.append(container);
-
     });
   }
 
@@ -261,8 +248,6 @@ class Dialog {
       const container = document.createElement('div');
 
       const submitCb = (formData) => {
-
-
         const data = {};
         for (const entry of formData) {
           const [field, value] = entry;

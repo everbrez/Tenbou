@@ -16,7 +16,7 @@ class Tenbou {
     // init 事件是将 player 和 dashboard 对象实例化之后，还没有进行render()，即还没有插入页面的时候触发事件。主要用来处理一些默认参数，如根据配置来设置初始化点数、游戏模式等等。
     this.eventHandler = {
       'init': [],
-      'roundend': [],
+      'roundEnd': [],
       'beforeRoundEnd': [],
       'afterRoundEnd': [],
       'richi': [],
@@ -171,18 +171,17 @@ class Tenbou {
 
   // 一局结束的统一入口
   handleRoundEnd(endType, target, data) {
-    /*Object.assign(data, { endType: endType });
-    this.recordResult();
+    Object.assign(data, { endType: endType });
 
     this.emitEvent('beforeRoundEnd', target, data);
     this.emitEvent('roundEnd', target, data);
 
-    this.showResult();
+    //this.showResult();
     this.showNextRoundButton();
 
     this.setState();
 
-    this.emitEvent('afterRoundEnd');*/
+    this.emitEvent('afterRoundEnd');
   }
 
   showNextRoundButton() {
@@ -205,12 +204,6 @@ class Tenbou {
       player.hideResult();
     });
     this.state.dashboard.hideResult();
-  }
-
-  recordResult() {
-    this.state.players.forEach(player => {
-      player.recordScore();
-    });
   }
 
   // 下一局前做的更新、前处理操作
