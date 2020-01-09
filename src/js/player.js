@@ -114,7 +114,7 @@ class Player {
           ${this.score}
         </span>
         <div class="player-info">
-          <img src="./img/player/${this.avatar}.png" alt="${this.identity}">
+          <img src="../../img/player/${this.avatar}.png" alt="${this.identity}">
           <span class="player-name">${this.name}<span>
         </div>
       </div>

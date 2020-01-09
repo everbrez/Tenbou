@@ -35,8 +35,7 @@ class Tenbou {
     // 此处get用户的设置，初始化player
     let dialog = new Dialog();
 
-    await dialog.showConfigDialog();
-    this.config = getSetting();
+    this.config = Setting.getSetting();
 
     // 读取用户设置的 palyer 信息，包括 id 名字等
     const playersConfig = await dialog.showUserConfigDialog();
