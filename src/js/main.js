@@ -86,27 +86,42 @@ function main() {
   });
 
   game.on('beforeRoundEnd', (state, event) => {
-    /*
-    // data 为用户在选择tsumo、ron、流局或者多人和输入的数据
-    // type 为 tsumo ron 流局（draw）或者多人和（multiRon）
-    const id = player.id;
-    lastPlayer = state.players[(id - 1 - 1 + 4) % 4];
-    player.score += 10000;
-    lastPlayer.score -= 5000;
-    return state;*/
+    const {
+      target
+    } = event;
+
+    target.showResult();
+
+    return state;
   });
 
   game.on('roundEnd', (state, event) => {
-    /*if (player.score > 42000) {
-      Tenbou.gameover('点数超过42000');
-    }*/
+    const {
+      target
+    } = event;
+
+    // 加上点数
+
+    target.showNextRoundButton();
+    target.setState();
+
+    return state;
   });
 
   game.on('afterRoundEnd', (state, event) => {
-    /*state.dashboard.honba += 1;
-    if (state.dashboard.roundName === '南四局') {
-      Tenbou.gameover('正常流局');
-    }*/
+    const {
+      target
+    } = event;
+
+    // 骰子
+    target.hideResult();
+    target.hideNextRoundButton();
+    // TODO: 重设 player 状态
+    target.state.players.forEach(player => player.nextRound());
+    target.state.dashboard.nextRound();
+    target.setState();
+
+    return state;
   });
 
   game.start();

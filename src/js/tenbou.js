@@ -173,15 +173,9 @@ class Tenbou {
   handleRoundEnd(endType, target, data) {
     Object.assign(data, { endType: endType });
 
-    this.emitEvent('beforeRoundEnd', target, data);
-    this.emitEvent('roundEnd', target, data);
-
-    //this.showResult();
-    this.showNextRoundButton();
-
-    this.setState();
-
-    this.emitEvent('afterRoundEnd');
+    this.emitEvent('beforeRoundEnd', this, data);
+    this.emitEvent('roundEnd', this, data);
+    this.emitEvent('afterRoundEnd', this, data);
   }
 
   showNextRoundButton() {
