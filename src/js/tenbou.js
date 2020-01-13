@@ -206,7 +206,7 @@ class Tenbou {
     this.hideResult();
     this.hideNextRoundButton();
     // 重设 player 状态
-    this.state.players.forEach(player => player.richi = false);
+    this.state.players.forEach(player => player.nextRound());
     this.state.dashboard.nextRound();
     this.setState();
   }

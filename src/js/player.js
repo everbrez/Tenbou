@@ -231,4 +231,21 @@ class Player {
 
     return Player.findByPosition('东南西北'[pos]);
   }
+
+  // 寻找亲家
+  static getOya() {
+    const players = getPlayers();
+    for (const player of players) {
+      if (player.oya)
+        return player;
+    }
+  }
+
+  nextRound() {
+    this.score += this.roundData;
+    this.richi = false;
+    this.roundData = 0;
+    this.result = '';
+    this.isShowResult = false;
+  }
 }
