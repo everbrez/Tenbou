@@ -76,18 +76,10 @@ function main() {
     else
       score *= 4;
 
-    score = Math.ceil(score / 100) * 100;
-
-    console.log(score);
-
-    score += state.dashboard.honba * getSetting()['场棒点数'];
-
-    console.log(score);
+    score = Math.ceil(score / 100) * 100 + state.dashboard.honba * getSetting()['场棒点数'];
 
     target.roundData += score + state.dashboard.richi * getSetting()['立直棒点数'];
     loser.roundData += -score;
-
-    console.log(getPlayers());
 
     return state;
   });
@@ -145,7 +137,7 @@ function main() {
 
       const players = getPlayers();
       for (const player of players) {
-        if (!player.oya)
+        if (player !== target)
           player.roundData -= score;
         else
           player.roundData += score * 3 + state.dashboard.richi * getSetting()['立直棒点数'];
@@ -155,12 +147,10 @@ function main() {
       for (const player of players) {
         if (player !== target) {
           if (player.oya)
-            score = Math.ceil(2 * score / 100) * 100 + state.dashboard.honba * getSetting()['场棒点数'] / 3;
+            player.roundData -= Math.ceil(2 * score / 100) * 100 + state.dashboard.honba * getSetting()['场棒点数'] / 3;
           else
-            score = Math.ceil(score / 100) * 100 + state.dashboard.honba * getSetting()['场棒点数'] / 3;
-          player.roundData -= score;
-        }
-        else {
+            player.roundData -= Math.ceil(score / 100) * 100 + state.dashboard.honba * getSetting()['场棒点数'] / 3;
+        } else {
           player.roundData += Math.ceil(2 * score / 100) * 100 + Math.ceil(score / 100) * 100 * 2 + state.dashboard.honba * getSetting()['场棒点数'] + state.dashboard.richi * getSetting()['立直棒点数'];
         }
       }
