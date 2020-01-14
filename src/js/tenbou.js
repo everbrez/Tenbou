@@ -154,8 +154,8 @@ class Tenbou {
     if (!data) {
       return;
     }
-    this.emitEvent('ryukyoku', undefined, data);
-    this.handleRoundEnd('ryukyoku', undefined, data);
+    this.emitEvent('ryukyoku', this, data);
+    this.handleRoundEnd('ryukyoku', this, data);
   }
 
   // 处理多人和

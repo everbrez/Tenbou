@@ -159,6 +159,13 @@ function main() {
     return state;
   });
 
+  game.on('ryukyoku', (state, event) => {
+    console.log('流局');
+    console.log(event)
+
+    return state;
+  });
+
   game.on('beforeRoundEnd', (state, event) => {
     const {
       target
