@@ -391,6 +391,10 @@ class Dialog {
               playersLabel.innerHTML = '听牌玩家';
             }
             if (inputEl.value === '流局满贯') {
+              if (new FormData(form).getAll('players').length === 0) {
+                const playersCheckboxItem = playersCheckbox.querySelector('input');
+                playersCheckboxItem.checked = true;
+              }
               playersLabel.innerHTML = '完成玩家';
             }
             return
