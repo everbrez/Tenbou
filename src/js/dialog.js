@@ -343,6 +343,7 @@ class Dialog {
     return new Promise(resolve => {
       const options = ['荒牌流局'].concat(Setting.getSetting()['途中流局'].concat(
         Setting.getSetting()['流局满贯'] ? ['流局满贯'] : []));
+      const players = getPlayers();
       const htmlTemplate =
         `<div class="dialog-container">
           <form id="draw-form">
@@ -353,6 +354,15 @@ class Dialog {
                 <input type="radio" value="${type}" name="draw-type" id="draw-${index}" ${index ? '' : 'checked'}/>
                 ${type}
               </label>
+              `).join('')}
+            </div>
+            <div class="draw-player-checkbox form-field">
+            <span class="form-label">听牌玩家：</span>
+              ${players.map(player => `
+                <label for="player-${player.id}">
+                  <input type="checkbox" id="player-${player.id}" name="players" value="${player.id}"/>
+                  ${player.name}
+                </label>
               `).join('')}
             </div>
             <div class="draw-button-containers">
@@ -369,15 +379,35 @@ class Dialog {
 
       const form = container.querySelector('#draw-form');
       const cancelButton = container.querySelector('#cancel-button');
+      const playersCheckbox = container.querySelector('.draw-player-checkbox')
+      const playersLabel = playersCheckbox.querySelector('.form-label');
+
+      form.addEventListener('change', event => {
+        const inputEl = event.target
+        if (inputEl.name === 'draw-type') {
+          if ([options[0], options[options.length - 1]].includes(inputEl.value)) {
+            playersCheckbox.classList.remove('visibility-hidden');
+            if (inputEl.value === '荒牌流局') {
+              playersLabel.innerHTML = '听牌玩家';
+            }
+            if (inputEl.value === '流局满贯') {
+              playersLabel.innerHTML = '完成玩家';
+            }
+            return
+          }
+          playersCheckbox.classList.add('visibility-hidden');
+        }
+      })
       form.addEventListener('submit', event => {
         event.preventDefault();
         event.stopPropagation();
 
         const formData = new FormData(form);
 
-        const data = formData.get('draw-type');
+        const type = formData.get('draw-type');
+        const players = formData.getAll('players').map(Number);
         container.remove();
-        resolve(data);
+        resolve({type, players});
       }, false);
 
       cancelButton.addEventListener('click', () => {

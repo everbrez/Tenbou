@@ -161,7 +161,7 @@ function main() {
 
   game.on('ryukyoku', (state, event) => {
     console.log('流局');
-    console.log(event)
+    console.log(event.data)
 
     return state;
   });

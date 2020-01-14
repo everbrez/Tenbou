@@ -38,6 +38,14 @@ body {
   background-color: lightgreen;
 }
 
+.hidden {
+  display: none;
+}
+
+.visibility-hidden {
+  visibility: hidden;
+}
+
 /* radio: 16 : 9 */
 @media (orientation: landscape) {
   .container {
